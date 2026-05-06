@@ -91,7 +91,7 @@
 
 % Configuraciones de TOC
 \renewcommand\cftaftertoctitle{\hfill\mbox{}}
-\renewcommand{\cftchapfont}{\bfseries Chapter }
+%\renewcommand{\cftchapfont}{\bfseries Chapter }
 %\addtocontents{toc}{\hfill{Pág.}\par}
 
 % Configurar numeracion de secciones
