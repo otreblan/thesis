@@ -1,10 +1,6 @@
 % Document Class LaTeX para la Tesis de UTEC.
 % Este template ha sido modificado por Eduardo Castro y Roosevelt Ubaldo en base al template creado por Víctor Murray, Oscar Ramos y Juan Carlos Barbaran.
 
-
-\usepackage{silence}
-\WarningFilter{hyperref}{Token not allowed in a PDF string}
-
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesClass{tesisutec}
 
