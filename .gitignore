@@ -1,0 +1,15 @@
+*.aux*
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.pdf
+*.synctex.gz
+svg-inkscape
+cache
+tikz
+*.bbl
+*.bcf
+*.blg
+*.run.xml
+*.toc
