@@ -14,3 +14,5 @@ tikz
 *.run.xml
 *.toc
 *(busy)
+*.lot
+*.lof

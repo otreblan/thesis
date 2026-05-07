@@ -13,4 +13,27 @@
 	\label{fig:fdtd_lucuma_service_graph}
 \end{figure}
 
+\begin{figure}[H]
+	\centering
+	\begin{tikzpicture}[
+			transform shape,
+			vertex/.style={draw, ellipse, thick},
+		]
+		\node[vertex] (A) at (0,0) {Update mangentic fields};
+		\node[vertex] (B) [below=of A] {Update electric fields};
+		\node[vertex] (C) [below=of B] {Apply sources};
+		\node[vertex] (D) [below=of C] {Boundary conditions};
+
+		\path[-{Triangle[length=5]}, thick]
+			(A) edge (B)
+			(B) edge (C)
+			(C) edge (D)
+			(D.west) edge[bend left] (A.west)
+		;
+
+	\end{tikzpicture}
+	\caption{FDTD Lucuma's simulation step structure}
+	\label{fig:fdtd_lucuma_step}
+\end{figure}
+
 \end{document}
