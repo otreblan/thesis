@@ -8,9 +8,9 @@
 
 FDTD Lucuma is a simulator made in C++26.
 It can be used from the command line and from a gui made with Dear ImGui\cite{imgui}.
-Internally it is structured in swappable services using dependency injection.
+Internally it is structured using Entity Component System (ECS) with EnTT\cite{entt} and with swappable services using dependency injection.
 From which the \texttt{frontend} (cli or gui) consumes one of the \texttt{backends}.
-Currently there are 9 backends:
+Currently it has 9 backends:
 
 \begin{table}[H]
 	\centering
