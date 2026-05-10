@@ -6,6 +6,28 @@
 \newpage
 \chapter{METHODOLOGY}
 
+FDTD Lucuma is a simulator made in C++26.
+It can be used from the command line and from a gui made with Dear ImGui\cite{imgui}.
+Internally it is structured in swappable services using dependency injection.
+From which the \texttt{frontend} (cli or gui) consumes one of the \texttt{backends}.
+Currently there are 9 backends:
+
+\begin{table}[H]
+	\centering
+	\begin{tabular}{l|c|c|c}
+		Precision: & float16 & float32 & float64 \\
+		\hline
+		CPU sequential & \checkmark & \checkmark & \checkmark \\
+		CPU parallel   & \checkmark & \checkmark & \checkmark \\
+		GPU (Vulkan)   & \checkmark & \checkmark & \triangle\footnotemark \\
+	\end{tabular}
+	\caption{FDTD Lucuma's backends}
+	\label{tab:nine_backends}
+\end{table}
+\footnotetext{As of 2026 float64's exp() is not implemented in mesa's amd drivers} 
+
+For the GPU backend FDTD Lucuma implements the FDTD method using Vulkan\cite{vulkanspec} Compute Shaders.
+
 \begin{figure}[H]
 	\centering
 	\includesvg[width=1\textwidth,inkscapelatex=false,]{images/graph.svg}
