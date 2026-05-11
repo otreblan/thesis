@@ -9,8 +9,35 @@
 \section{FDTD}
 \subsection{Yee's algorithm}
 \subsection{3D implementation}
-\section{Julia}
+\section{Julia + CUDA}
 \section{Vulkan}
-Vulkan\cite{vulkanspec}
+Unlike CUDA, where a kernel can be defined and launched in the same source file, Vulkan\cite{vulkanspec} requires
+for each shader to be compiled into a spirv file, loaded into a shader module\footnote{From Vulkan 1.4 onwards the \texttt{*.spv} file path can be passed directly into the creation of the pipeline.} and then finally used as part of a compute pipeline before it can be used.
+
+\begin{figure}[H]
+	\centering
+	\begin{tikzpicture}[
+			transform shape,
+			vertex/.style={draw, ellipse, thick},
+			scale=0.9
+		]
+		\node[vertex] (A) at (0,0) {\texttt{*.spv}};
+		\node[vertex] (B) [above left=of A] {\texttt{*.slang}};
+		\node[vertex] (C) [below left=of A] {\texttt{*.glsl}};
+		\node[vertex] (D) [right=of A] {\texttt{VkShaderModule}};
+		\node[vertex] (E) [right=of D] {\texttt{VkPipeline}};
+
+		\path[-{Triangle[length=5]}, thick]
+			(B) edge (A)
+			(C) edge (A)
+			(A) edge (D)
+			(D) edge (E)
+			(A) edge[bend left] node[label=above:Since Vulkan 1.4] {} (E)
+		;
+
+	\end{tikzpicture}
+	\caption{Vulkan compute pipeline creation}
+	\label{fig:vulkan_compute_pipeline}
+\end{figure}
 
 \end{document}
