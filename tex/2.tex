@@ -10,9 +10,17 @@
 \subsection{Yee's algorithm}
 \subsection{3D implementation}
 \section{Julia + CUDA}
+Julia\cite{juliaspec}
+
 \section{Vulkan}
-Unlike CUDA, where a kernel can be defined and launched in the same source file, Vulkan\cite{vulkanspec} requires
+Vulkan\cite{vulkanspec} is a low-level C API for graphics and compute in GPUs.
+Unlike CUDA, which only runs on Nvidia hardware natively\footnote{With ZLUDA is posible to run CUDA programs in Radeon hardware.}, it has a wider range of compatible GPU hardware\cite{vulkandb}.
+
+In OpenGL, Vulkan's predecesor, the shader source file can be passed directly to the driver, but Vulkan requires
 for each shader to be compiled into a spirv file, loaded into a shader module\footnote{From Vulkan 1.4 onwards the \texttt{*.spv} file path can be passed directly into the creation of the pipeline.} and then finally used as part of a compute pipeline before it can be used.
+For that purpose a shader compiler is needed.
+Like Google's \texttt{glslc}\cite{shaderc} or Shader Slang's \texttt{slangc}\cite{10.1145/3197517.3201380} (which is the one that we used in this project).
+
 
 \begin{figure}[H]
 	\centering
