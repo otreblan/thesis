@@ -13,7 +13,7 @@
 Julia\cite{juliaspec} is a dynamically typed programming language mainly used for scientific computing.
 Moreover, the \texttt{CUDA.jl}\cite{besard2018juliagpu} package allows it to interface with Nvidia GPUs.
 Here is an example, a kernel that sums two arrays value-wise and sets the results in a third array:
-\inputminted[bgcolor=codeBg, tabsize=4, breaklines=true, linenos=true]{julia}{cuda.jl}
+\inputminted[bgcolor=codeBg, tabsize=4, breaklines=true, linenos=true]{julia}{add.jl}
 
 \section{Vulkan}
 Vulkan\cite{vulkanspec} is a low-level C API for graphics and compute in GPUs.
@@ -50,5 +50,12 @@ Like Google's \texttt{glslc}\cite{shaderc} or Shader Slang's \texttt{slangc}\cit
 	\caption{Vulkan compute pipeline creation}
 	\label{fig:vulkan_compute_pipeline}
 \end{figure}
+
+Using Vulkan Compute Shaders requires writing a considerable amount of boilerplate.
+Therefore the complete version of the sum two arrays example is in the Github repository\footnote{\tiny{\url{https://github.com/fdtd-lucuma/fdtd-lucuma/blob/53fc40cde634b7360941ea330caa1e1fe68697a8/src/services/compute.cpp\#L34}}}:
+
+\inputminted[bgcolor=codeBg, tabsize=4, breaklines=true, linenos=true]{hlsl}{add.slang}
+\inputminted[bgcolor=codeBg, tabsize=4, breaklines=true, linenos=true]{hlsl}{add.cpp}
+
 
 \end{document}
