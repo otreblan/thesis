@@ -17,3 +17,4 @@ tikz
 *.lot
 *.lof
 *SAVE-ERROR
+*.minted

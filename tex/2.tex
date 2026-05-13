@@ -12,6 +12,8 @@
 \section{Julia + CUDA}
 Julia\cite{juliaspec} is a dynamically typed programming language mainly used for scientific computing.
 Moreover, the \texttt{CUDA.jl}\cite{besard2018juliagpu} package allows it to interface with Nvidia GPUs.
+Here is an example, a kernel that sums two arrays value-wise and sets the results in a third array:
+\inputminted[bgcolor=codeBg, tabsize=4, breaklines=true, linenos=true]{julia}{cuda.jl}
 
 \section{Vulkan}
 Vulkan\cite{vulkanspec} is a low-level C API for graphics and compute in GPUs.
