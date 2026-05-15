@@ -7,8 +7,15 @@
 \chapter{BACKGROUND}
 
 \section{FDTD}
+
+The finite-difference time-domain (FDTD) method\cite{ufdtd} is used to aproximate electromagnetic fields over time.
+
 \subsection{Yee's algorithm}
+
+
 \subsection{3D implementation}
+
+
 \section{Julia + CUDA}
 Julia\cite{juliaspec} is a dynamically typed programming language mainly used for scientific computing.
 Moreover, the \texttt{CUDA.jl}\cite{besard2018juliagpu} package allows it to interface with Nvidia GPUs.
@@ -35,15 +42,17 @@ Like Google's \texttt{glslc}\cite{shaderc} or Shader Slang's \texttt{slangc}\cit
 		\node[vertex] (A) at (0,0) {\texttt{*.spv}};
 		\node[vertex] (B) [above left=of A] {\texttt{*.slang}};
 		\node[vertex] (C) [below left=of A] {\texttt{*.glsl}};
+		\node[vertex] (F) [left=of A] {\texttt{*.hlsl}};
 		\node[vertex] (D) [right=of A] {\texttt{VkShaderModule}};
 		\node[vertex] (E) [right=of D] {\texttt{VkPipeline}};
 
 		\path[-{Triangle[length=5]}, thick]
 			(B) edge (A)
 			(C) edge (A)
+			(F) edge (A)
 			(A) edge (D)
 			(D) edge (E)
-			(A) edge[bend left] node[label=above:Since Vulkan 1.4] {} (E)
+			(A) edge[bend left, dashed] node[label=above:Since Vulkan 1.4\cite{vulkan14}] {} (E)
 		;
 
 	\end{tikzpicture}
@@ -55,7 +64,6 @@ Using Vulkan Compute Shaders requires writing a considerable amount of boilerpla
 Therefore the complete version of the sum two arrays example is in the Github repository\footnote{\tiny{\url{https://github.com/fdtd-lucuma/fdtd-lucuma/blob/53fc40cde634b7360941ea330caa1e1fe68697a8/src/services/compute.cpp\#L34}}}:
 
 \inputminted[bgcolor=codeBg, tabsize=4, breaklines=true, linenos=true]{hlsl}{add.slang}
-\inputminted[bgcolor=codeBg, tabsize=4, breaklines=true, linenos=true]{hlsl}{add.cpp}
-
+\inputminted[bgcolor=codeBg, tabsize=4, breaklines=true, linenos=true]{cpp}{add.cpp}
 
 \end{document}
