@@ -26,14 +26,26 @@ Currently it has 9 backends:
 \end{table}
 \footnotetext{As of 2026, float64's \texttt{exp()} is not implemented in mesa's amd drivers}
 
+The sequential backend uses plain C++, while the parallel one uses Taskflow\cite{Huang_2022}.
 For the GPU backend, FDTD Lucuma implements the FDTD method using Vulkan\cite{vulkanspec} Compute Shaders written in Shader Slang\cite{10.1145/3197517.3201380}.
 
 \begin{figure}[H]
 	\centering
 	\includesvg[width=1\textwidth,inkscapelatex=false,]{images/graph.svg}
-	\caption{FDTD Lucuma's service dependency graph}
+	\caption{FDTD Lucuma's service dependency graph (when the Vulkan backend is selected)}
 	\label{fig:fdtd_lucuma_service_graph}
 \end{figure}
+
+The program flow from the CLI is as follows:
+\begin{enumerate}
+	\item The program starts.
+	\item Basic services are instantiated.
+	\item The backend to be instantiated is selected from the command line arguments. (In Figure \ref{fig:fdtd_lucuma_service_graph} you can see all the services that are instantiated by the backend service)
+	\item A new ECS entity is created and the simulation state is attached as a component.
+	\item The simulation iterates for a determined ammount of timesteps.
+	\item Simulation entity's components cleanup.
+	\item Services cleanup in reverse order of creation.
+\end{enumerate}
 
 \begin{figure}[H]
 	\centering
