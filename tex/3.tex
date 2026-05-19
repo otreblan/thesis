@@ -6,6 +6,8 @@
 \newpage
 \chapter{METHODOLOGY}
 
+\section{Structures and flow}
+
 FDTD Lucuma is a simulator made in C++26.
 It can be used from the command line and from a gui made with Dear ImGui\cite{imgui}.
 Internally it is structured using Entity Component System (ECS) with EnTT\cite{entt} and with swappable services using dependency injection.
@@ -69,5 +71,30 @@ The program flow from the CLI is as follows:
 	\caption{FDTD Lucuma's simulation step sequence}
 	\label{fig:fdtd_lucuma_step}
 \end{figure}
+
+
+\section{Compilation targets}
+\subsection{Linux (Debian Experimental)}
+C++20's modules have not been widely implemented for a substantial ammount of time as of 2026.
+Thus a bleeding edge compiler and toolchain is needed.
+\inputminted[bgcolor=codeBg, tabsize=4, breaklines=true, linenos=true]{bash}{build-debian.sh}
+\subsection{Linux (Arch Linux)}
+Arch Linux as a rolling release distribution has no problems providing the latest software.
+Plus the Arch Linux User Repository (AUR) has niche packages.
+Even if a software is not packaged, you can just package it yourself.
+As of 2026 I am the maintainer of Arch Linux's Shader Slang package\footnote{\url{https://aur.archlinux.org/packages/shader-slang}}.
+\inputminted[bgcolor=codeBg, tabsize=4, breaklines=true, linenos=true]{bash}{build-arch.sh}
+\subsection{Linux (any other x86 distribution)}
+The version of the GPU driver must be the same version as the host one for the Vulkan acceleration to work.
+\inputminted[bgcolor=codeBg, tabsize=4, breaklines=true, linenos=true]{bash}{build-junest.sh}
+\subsection{MacOS}
+MacOS does not support Vulkan natively.
+Instead, it has a layer over Metal named MoltenVK\cite{moltenvk}.
+\inputminted[bgcolor=codeBg, tabsize=4, breaklines=true, linenos=true]{bash}{build-macos.sh}
+\subsection{Android (Termux with proot)}
+This target doesn't support GPU acceleration via Vulkan. While it's possible to run Vulkan programs in Termux directly, as of 2026 is not possible to compile C++ programs that uses the std module (\texttt{import std}) with the Bionic standard library\footnote{\url{https://github.com/termux/termux-packages/issues/23870}}.
+Therefore using a PRoot bypasses that problem by not using Bionic but Glibc instead.
+\inputminted[bgcolor=codeBg, tabsize=4, breaklines=true, linenos=true]{bash}{build-proot.sh}
+%\subsection{Android (Termux)}
 
 \end{document}
