@@ -91,10 +91,7 @@ The version of the GPU driver must be the same version as the host one for the V
 MacOS does not support Vulkan natively.
 Instead, it has a layer over Metal named MoltenVK\cite{moltenvk}.
 \inputminted[bgcolor=codeBg, tabsize=4, breaklines=true, linenos=true]{bash}{build-macos.sh}
-\subsection{Android (Termux with proot)}
-This target doesn't support GPU acceleration via Vulkan. While it's possible to run Vulkan programs in Termux directly, as of 2026 is not possible to compile C++ programs that uses the std module (\texttt{import std}) with the Bionic standard library\footnote{\url{https://github.com/termux/termux-packages/issues/23870}}.
-Therefore using a PRoot bypasses that problem by not using Bionic but Glibc instead.
-\inputminted[bgcolor=codeBg, tabsize=4, breaklines=true, linenos=true]{bash}{build-proot.sh}
-%\subsection{Android (Termux)}
+\subsection{Android (Termux)}
+\inputminted[bgcolor=codeBg, tabsize=4, breaklines=true, linenos=true]{bash}{build-termux.sh}
 
 \end{document}
