@@ -4,6 +4,7 @@ cd fdtd-lucuma
 pkg add x11-repo tur-repo
 xargs -oa pkg/termux/dependencies.txt -- pkg add
 
+# https://github.com/termux/termux-packages/pull/29841
 NDK_VERSION=29
 NDK=android-ndk-r$NDK_VERSION
 curl -LO https://dl.google.com/android/repository/$NDK-linux.zip
