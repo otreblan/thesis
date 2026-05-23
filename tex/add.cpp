@@ -4,7 +4,8 @@ void Compute::compute()
 	float b = 2.0f;
 	float c;
 
-	auto pipeline = createHelloWorld(); // VkComputePipeline and it's binded VkBuffers
+	// VkComputePipeline and it's binded VkBuffers
+	auto pipeline = createHelloWorld();
 
 	pipeline.aBuffer.memcpy(&a, sizeof(float)*1);
 	pipeline.bBuffer.memcpy(&b, sizeof(float)*1);
@@ -51,35 +52,36 @@ Compute::HelloWorldData Compute::createHelloWorld()
 
 	result.pipeline = vulkanCompute.createPipeline({
 		.shaderPath = "hello_world.spv",
-		.setLayouts = {
-			{
-				.bindings = {
-					vk::DescriptorSetLayoutBinding {
-						.binding         = 0,
-						.descriptorType  = vk::DescriptorType::eStorageBuffer,
-						.descriptorCount = 1,
-						.stageFlags      = vk::ShaderStageFlagBits::eCompute,
-					},
-					vk::DescriptorSetLayoutBinding {
-						.binding         = 1,
-						.descriptorType  = vk::DescriptorType::eStorageBuffer,
-						.descriptorCount = 1,
-						.stageFlags      = vk::ShaderStageFlagBits::eCompute,
-					},
-					vk::DescriptorSetLayoutBinding {
-						.binding         = 2,
-						.descriptorType  = vk::DescriptorType::eStorageBuffer,
-						.descriptorCount = 1,
-						.stageFlags      = vk::ShaderStageFlagBits::eCompute,
-					},
+		.setLayouts = {{
+			.bindings = {
+				vk::DescriptorSetLayoutBinding {
+					.binding         = 0,
+					.descriptorType  = vk::DescriptorType::eStorageBuffer,
+					.descriptorCount = 1,
+					.stageFlags      = vk::ShaderStageFlagBits::eCompute,
 				},
-				.buffers = {
-					result.aBuffer,
-					result.bBuffer,
-					result.cBuffer,
-				}
+
+				vk::DescriptorSetLayoutBinding {
+					.binding         = 1,
+					.descriptorType  = vk::DescriptorType::eStorageBuffer,
+					.descriptorCount = 1,
+					.stageFlags      = vk::ShaderStageFlagBits::eCompute,
+				},
+
+				vk::DescriptorSetLayoutBinding {
+					.binding         = 2,
+					.descriptorType  = vk::DescriptorType::eStorageBuffer,
+					.descriptorCount = 1,
+					.stageFlags      = vk::ShaderStageFlagBits::eCompute,
+				},
+
+			},
+			.buffers = {
+				result.aBuffer,
+				result.bBuffer,
+				result.cBuffer,
 			}
-		},
+		}},
 	});
 
 	return result;

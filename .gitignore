@@ -18,3 +18,4 @@ tikz
 *.lof
 *SAVE-ERROR
 *.minted
+_minted-main

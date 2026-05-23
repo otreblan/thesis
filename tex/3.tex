@@ -77,21 +77,21 @@ The program flow from the CLI is as follows:
 \subsection{Linux (Debian Experimental)}
 C++20's modules have not been widely implemented for a substantial ammount of time as of 2026.
 Thus a bleeding edge compiler and toolchain is needed.
-\inputminted[bgcolor=codeBg, tabsize=4, breaklines=true, linenos=true]{bash}{build-debian.sh}
+\inputminted[bgcolor=codeBg, tabsize=4, breaklines=true, linenos=true]{bash}{\subfix{build-debian.sh}}
 \subsection{Linux (Arch Linux)}
 Arch Linux as a rolling release distribution has no problems providing the latest software.
 Plus the Arch Linux User Repository (AUR) has niche packages.
 Even if a software is not packaged, you can just package it yourself.
 As of 2026 I am the maintainer of Arch Linux's Shader Slang package\footnote{\url{https://aur.archlinux.org/packages/shader-slang}}.
-\inputminted[bgcolor=codeBg, tabsize=4, breaklines=true, linenos=true]{bash}{build-arch.sh}
+\inputminted[bgcolor=codeBg, tabsize=4, breaklines=true, linenos=true]{bash}{\subfix{build-arch.sh}}
 \subsection{Linux (any other x86 distribution)}
 The version of the GPU driver must be the same version as the host one for the Vulkan acceleration to work.
-\inputminted[bgcolor=codeBg, tabsize=4, breaklines=true, linenos=true]{bash}{build-junest.sh}
+\inputminted[bgcolor=codeBg, tabsize=4, breaklines=true, linenos=true]{bash}{\subfix{build-junest.sh}}
 \subsection{MacOS}
 MacOS does not support Vulkan natively.
 Instead, it has a layer over Metal named MoltenVK\cite{moltenvk}.
-\inputminted[bgcolor=codeBg, tabsize=4, breaklines=true, linenos=true]{bash}{build-macos.sh}
+\inputminted[bgcolor=codeBg, tabsize=4, breaklines=true, linenos=true]{bash}{\subfix{build-macos.sh}}
 \subsection{Android (Termux)}
-\inputminted[bgcolor=codeBg, tabsize=4, breaklines=true, linenos=true]{bash}{build-termux.sh}
+\inputminted[bgcolor=codeBg, tabsize=4, breaklines=true, linenos=true]{bash}{\subfix{build-termux.sh}}
 
 \end{document}
