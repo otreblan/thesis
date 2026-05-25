@@ -28,6 +28,16 @@ void Compute::compute()
 	std::println("{} + {} = {}", a, b, c);
 }
 
+vk::DescriptorSetLayoutBinding simpleComputeBuffer(std::uint32_t binding)
+{
+	return vk::DescriptorSetLayoutBinding {
+		.binding         = binding,
+		.descriptorType  = vk::DescriptorType::eStorageBuffer,
+		.descriptorCount = 1,
+		.stageFlags      = vk::ShaderStageFlagBits::eCompute,
+	};
+}
+
 Compute::HelloWorldData Compute::createHelloWorld()
 {
 	HelloWorldData result;
@@ -54,26 +64,9 @@ Compute::HelloWorldData Compute::createHelloWorld()
 		.shaderPath = "hello_world.spv",
 		.setLayouts = {{
 			.bindings = {
-				vk::DescriptorSetLayoutBinding {
-					.binding         = 0,
-					.descriptorType  = vk::DescriptorType::eStorageBuffer,
-					.descriptorCount = 1,
-					.stageFlags      = vk::ShaderStageFlagBits::eCompute,
-				},
-
-				vk::DescriptorSetLayoutBinding {
-					.binding         = 1,
-					.descriptorType  = vk::DescriptorType::eStorageBuffer,
-					.descriptorCount = 1,
-					.stageFlags      = vk::ShaderStageFlagBits::eCompute,
-				},
-
-				vk::DescriptorSetLayoutBinding {
-					.binding         = 2,
-					.descriptorType  = vk::DescriptorType::eStorageBuffer,
-					.descriptorCount = 1,
-					.stageFlags      = vk::ShaderStageFlagBits::eCompute,
-				},
+				simpleComputeBuffer(0),
+				simpleComputeBuffer(1),
+				simpleComputeBuffer(2),
 
 			},
 			.buffers = {

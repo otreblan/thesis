@@ -8,10 +8,33 @@
 
 \section{FDTD}
 
-The finite-difference time-domain (FDTD) method\cite{ufdtd} is used to aproximate electromagnetic fields over time.
-
 \subsection{Yee's algorithm}
 
+The finite-difference time-domain (FDTD) method\cite{ufdtd} is used to aproximate electromagnetic fields over time.
+It consists on a pair of ``update equations'' based on discretized versions of Ampère's law and Faraday's law.
+
+\begin{figure}[H]
+	\centering
+	\begin{tikzpicture}[
+			transform shape,
+			vertex/.style={draw, ellipse, thick},
+		]
+		\node[vertex] (A) at (0,0) {Update magnetic fields};
+		\node[vertex] (B) [below=of A] {Update electric fields};
+		\node[vertex] (C) [below=of B] {Apply sources};
+		\node[vertex] (D) [below=of C] {Boundary conditions};
+
+		\path[-{Triangle[length=5]}, thick]
+			(A) edge (B)
+			(B) edge (C)
+			(C) edge (D)
+			(D.west) edge[bend left] (A.west)
+		;
+
+	\end{tikzpicture}
+	\caption{Simulation step sequence}
+	\label{fig:fdtd_lucuma_step}
+\end{figure}
 
 \subsection{3D implementation}
 

@@ -49,30 +49,6 @@ The program flow from the CLI is as follows:
 	\item Services cleanup in reverse order of creation.
 \end{enumerate}
 
-\begin{figure}[H]
-	\centering
-	\begin{tikzpicture}[
-			transform shape,
-			vertex/.style={draw, ellipse, thick},
-		]
-		\node[vertex] (A) at (0,0) {Update magnetic fields};
-		\node[vertex] (B) [below=of A] {Update electric fields};
-		\node[vertex] (C) [below=of B] {Apply sources};
-		\node[vertex] (D) [below=of C] {Boundary conditions};
-
-		\path[-{Triangle[length=5]}, thick]
-			(A) edge (B)
-			(B) edge (C)
-			(C) edge (D)
-			(D.west) edge[bend left] (A.west)
-		;
-
-	\end{tikzpicture}
-	\caption{FDTD Lucuma's simulation step sequence}
-	\label{fig:fdtd_lucuma_step}
-\end{figure}
-
-
 \section{Compilation targets}
 \subsection{Linux (Debian Experimental)}
 C++20's modules have not been widely implemented for a substantial ammount of time as of 2026.
