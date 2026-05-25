@@ -36,7 +36,145 @@ It consists on a pair of ``update equations'' based on discretized versions of A
 	\label{fig:fdtd_lucuma_step}
 \end{figure}
 
-\subsection{3D implementation}
+\subsection{3D}
+
+\subsubsection{Variables}
+\begin{itemize}
+	\item $[x,y,z,t] \in \mathbb{R}^4$: 3D space and time.
+	\item $q \in \mathbb{R}$: Time index.
+	\item $[m,n,p] \in \mathbb{R}^3:$ Spatial index.
+	\item $H_i^q$: Magnetic field component at time $q$. $i \in \{x,y,z\}$
+	\item $E_i^q$: Electric field component at time $q$. $i \in \{x,y,z\}$
+	\item $\sigma$: Electric conductivity of a material.
+	\item $\sigma_m$: Magnetic conductivity of a material.
+	\item $\mu$: Permeability of a material.
+	\item $\epsilon$: Permittivity of a material.
+\end{itemize}
+
+\directlua{
+function fmt(x)
+	if x == "" then
+		return ""
+	end
+
+	local n = tonumber(x)
+
+	if n == 0.5 then
+		return "+\\frac{1}{2}"
+	elseif n == -0.5 then
+		return "-\\frac{1}{2}"
+	elseif n > 0 then
+		if n == math.floor(n) then
+			return "+" .. tostring(math.floor(n))
+		else
+			return "+" .. tostring(n)
+		end
+	elseif n < 0 then
+		if n == math.floor(n) then
+			return tostring(math.floor(n))
+		else
+			return tostring(n)
+		end
+	else
+		return ""
+	end
+end
+
+function coords(a,b,c)
+	tex.sprint(
+		"\\left[m" .. fmt(a) .. ",n" .. fmt(b) .. ",p" .. fmt(c) .. "\\right]"
+	)
+end
+}
+
+\newcommand{\coords}[3]{%
+	\directlua{
+		coords(
+			"\luaescapestring{#1}",
+			"\luaescapestring{#2}",
+			"\luaescapestring{#3}"
+		)
+	}%
+}
+
+\newcommand{\HHcoeff}{%
+	\frac{1-\frac{\sigma_m\Delta_t}{2\mu}}{1+\frac{\sigma_m\Delta_t}{2\mu}}%
+}
+
+\newcommand{\HEcoeff}{%
+	\frac{1}{1+\frac{\sigma_m\Delta_t}{2\mu}}%
+}
+
+\newcommand{\EEcoeff}{%
+	\frac{1-\frac{\sigma\Delta_t}{2\epsilon}}{1+\frac{\sigma\Delta_t}{2\epsilon}}%
+}
+
+\newcommand{\EHcoeff}{%
+	\frac{1}{1+\frac{\sigma\Delta_t}{2\epsilon}}%
+}
+
+\newcommand{\CommonDelta}[2]{%
+	\frac{\Delta_t}{#1\Delta_{#2}}%
+}
+
+\newcommand{\EDelta}[1]{%
+	\CommonDelta{\mu}{#1}%
+}
+
+\newcommand{\HDelta}[1]{%
+	\CommonDelta{\epsilon}{#1}%
+}
+
+\newcommand{\Hupdate}[8]{%
+	H_{#1}^{q+\frac{1}{2}} #4 &=%
+	\HHcoeff H_{#1}^{q-\frac{1}{2}}#4 \\%
+	+& \HEcoeff \biggl(\EDelta{#3}\left\{E_{#2}^q#5-E_{#2}^q#6\right\} \\%
+		-&\EDelta{#2}\left\{E_{#3}^q#7-E_{#3}^q#8\right\}%
+	\biggl)%
+}
+
+\newcommand{\Eupdate}[8]{%
+	E_{#1}^{q+1} #4 &=%
+	\EEcoeff E_{#1}^{q}#4 \\%
+	+& \EHcoeff \biggl(\HDelta{#3}\left\{H_{#2}^{q+\frac{1}{2}}#5-H_{#2}^{q+\frac{1}{2}}#6\right\} \\%
+		-&\HDelta{#2}\left\{H_{#3}^{q+\frac{1}{2}}#7-H_{#3}^{q+\frac{1}{2}}#8\right\}%
+	\biggl)%
+}
+
+\subsubsection{Update magnetic field components}
+\begin{equation}
+\begin{split}
+	\Hupdate{x}{y}{z}{\coords{}{0.5}{0.5}}{\coords{}{0.5}{1}}{\coords{}{0.5}{}}{\coords{}{1}{0.5}}{\coords{}{}{0.5}}
+\end{split}
+\end{equation}
+\begin{equation}
+\begin{split}
+	\Hupdate{y}{z}{x}{\coords{0.5}{}{0.5}}{\coords{1}{}{0.5}}{\coords{}{}{0.5}}{\coords{0.5}{}{1}}{\coords{0.5}{}{}}
+\end{split}
+\end{equation}
+\begin{equation}
+\begin{split}
+	\Hupdate{z}{x}{y}{\coords{0.5}{0.5}{}}{\coords{0.5}{1}{}}{\coords{0.5}{}{}}{\coords{1}{0.5}{}}{\coords{}{0.5}{}}
+\end{split}
+\end{equation}
+
+
+\subsubsection{Update electric field components}
+\begin{equation}
+\begin{split}
+	\Eupdate{x}{z}{y}{\coords{}{0.5}{}}{\coords{0.5}{0.5}{}}{\coords{0.5}{-0.5}{}}{\coords{0.5}{}{0.5}}{\coords{0.5}{}{-0.5}}
+\end{split}
+\end{equation}
+\begin{equation}
+\begin{split}
+	\Eupdate{y}{x}{z}{\coords{}{0.5}{}}{\coords{}{0.5}{0.5}}{\coords{}{0.5}{-0.5}}{\coords{0.5}{0.5}{}}{\coords{-0.5}{0.5}{}}
+\end{split}
+\end{equation}
+\begin{equation}
+\begin{split}
+	\Eupdate{z}{y}{x}{\coords{}{}{0.5}}{\coords{0.5}{}{0.5}}{\coords{-0.5}{}{0.5}}{\coords{}{0.5}{0.5}}{\coords{}{-0.5}{0.5}}
+\end{split}
+\end{equation}
 
 
 \section{Julia + CUDA}
