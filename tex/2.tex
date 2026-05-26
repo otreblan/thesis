@@ -12,6 +12,7 @@
 
 The finite-difference time-domain (FDTD) method\cite{ufdtd} is used to aproximate electromagnetic fields over time.
 It consists on a pair of ``update equations'' based on discretized versions of Ampère's law and Faraday's law.
+The core of fdtd-lucuma's simulation loop at each time step consists of those two equations, additive electric sources and the boundary conditions of each field and component.
 
 \begin{figure}[H]
 	\centering
@@ -19,8 +20,8 @@ It consists on a pair of ``update equations'' based on discretized versions of A
 			transform shape,
 			vertex/.style={draw, ellipse, thick},
 		]
-		\node[vertex] (A) at (0,0) {Update magnetic fields};
-		\node[vertex] (B) [below=of A] {Update electric fields};
+		\node[vertex] (A) at (0,0) {Update magnetic $\{x,y,z\}$ fields};
+		\node[vertex] (B) [below=of A] {Update electric $\{x,y,z\}$ fields};
 		\node[vertex] (C) [below=of B] {Apply sources};
 		\node[vertex] (D) [below=of C] {Boundary conditions};
 
@@ -49,6 +50,7 @@ It consists on a pair of ``update equations'' based on discretized versions of A
 	\item $\sigma_m$: Magnetic conductivity of a material.
 	\item $\mu$: Permeability of a material.
 	\item $\epsilon$: Permittivity of a material.
+	\item $C\{e,h\}\{x,y,z\}\{e,h\}$: Coefficients.
 \end{itemize}
 
 \directlua{
@@ -88,57 +90,57 @@ end
 }
 
 \newcommand{\coords}[3]{%
-	\directlua{
+	\ensuremath{\directlua{
 		coords(
 			"\luaescapestring{#1}",
 			"\luaescapestring{#2}",
 			"\luaescapestring{#3}"
 		)
-	}%
+	}}%
 }
 
-\newcommand{\HHcoeff}{%
-	\frac{1-\frac{\sigma_m\Delta_t}{2\mu}}{1+\frac{\sigma_m\Delta_t}{2\mu}}%
+\newcommand{\HHcoeff}[1]{%
+	\ensuremath{\underbrace{\frac{1-\frac{\sigma_m\Delta_t}{2\mu}}{1+\frac{\sigma_m\Delta_t}{2\mu}}}_{Ch#1h}}%
 }
 
-\newcommand{\HEcoeff}{%
-	\frac{1}{1+\frac{\sigma_m\Delta_t}{2\mu}}%
+\newcommand{\HEcoeff}[1]{%
+	\ensuremath{\underbrace{\frac{1}{1+\frac{\sigma_m\Delta_t}{2\mu}}}_{Ch#1e}}%
 }
 
-\newcommand{\EEcoeff}{%
-	\frac{1-\frac{\sigma\Delta_t}{2\epsilon}}{1+\frac{\sigma\Delta_t}{2\epsilon}}%
+\newcommand{\EEcoeff}[1]{%
+	\ensuremath{\underbrace{\frac{1-\frac{\sigma\Delta_t}{2\epsilon}}{1+\frac{\sigma\Delta_t}{2\epsilon}}}_{Ce#1e}}%
 }
 
-\newcommand{\EHcoeff}{%
-	\frac{1}{1+\frac{\sigma\Delta_t}{2\epsilon}}%
+\newcommand{\EHcoeff}[1]{%
+	\ensuremath{\underbrace{\frac{1}{1+\frac{\sigma\Delta_t}{2\epsilon}}}_{Ce#1h}}%
 }
 
 \newcommand{\CommonDelta}[2]{%
-	\frac{\Delta_t}{#1\Delta_{#2}}%
+	\ensuremath{\frac{\Delta_t}{#1\Delta_{#2}}}%
 }
 
 \newcommand{\EDelta}[1]{%
-	\CommonDelta{\mu}{#1}%
+	\ensuremath{\CommonDelta{\mu}{#1}}%
 }
 
 \newcommand{\HDelta}[1]{%
-	\CommonDelta{\epsilon}{#1}%
+	\ensuremath{\CommonDelta{\epsilon}{#1}}%
 }
 
 \newcommand{\Hupdate}[8]{%
-	H_{#1}^{q+\frac{1}{2}} #4 &=%
-	\HHcoeff H_{#1}^{q-\frac{1}{2}}#4 \\%
-	+& \HEcoeff \biggl(\EDelta{#3}\left\{E_{#2}^q#5-E_{#2}^q#6\right\} \\%
+	\ensuremath{H_{#1}^{q+\frac{1}{2}} #4 &=%
+	\HHcoeff{#1} H_{#1}^{q-\frac{1}{2}}#4 \\%
+	+& \HEcoeff{#1} \biggl(\EDelta{#3}\left\{E_{#2}^q#5-E_{#2}^q#6\right\} \\%
 		-&\EDelta{#2}\left\{E_{#3}^q#7-E_{#3}^q#8\right\}%
-	\biggl)%
+	\biggl)}%
 }
 
 \newcommand{\Eupdate}[8]{%
-	E_{#1}^{q+1} #4 &=%
-	\EEcoeff E_{#1}^{q}#4 \\%
-	+& \EHcoeff \biggl(\HDelta{#3}\left\{H_{#2}^{q+\frac{1}{2}}#5-H_{#2}^{q+\frac{1}{2}}#6\right\} \\%
+	\ensuremath{E_{#1}^{q+1} #4 &=%
+	\EEcoeff{#1} E_{#1}^{q}#4 \\%
+	+& \EHcoeff{#1} \biggl(\HDelta{#3}\left\{H_{#2}^{q+\frac{1}{2}}#5-H_{#2}^{q+\frac{1}{2}}#6\right\} \\%
 		-&\HDelta{#2}\left\{H_{#3}^{q+\frac{1}{2}}#7-H_{#3}^{q+\frac{1}{2}}#8\right\}%
-	\biggl)%
+	\biggl)}%
 }
 
 \subsubsection{Update magnetic field components}
