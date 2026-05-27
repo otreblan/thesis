@@ -38,25 +38,26 @@ For the GPU backend, FDTD Lucuma implements the FDTD method using Vulkan\cite{vu
 	\label{fig:fdtd_lucuma_service_graph}
 \end{figure}
 
-The program flow from the CLI is as follows:
+The flow of the program from the CLI is as follows:
 \begin{enumerate}
 	\item The program starts.
 	\item Basic services are instantiated.
 	\item The backend to be instantiated is selected from the command line arguments. (In Figure \ref{fig:fdtd_lucuma_service_graph} you can see all the services that are instantiated by the backend service)
 	\item A new ECS entity is created and the simulation state is attached as a component.
-	\item The simulation iterates for a determined ammount of timesteps.
-	\item Simulation entity's components cleanup.
-	\item Services cleanup in reverse order of creation.
+    \item The electric sources are attached to new entities.
+	\item The simulation iterates for a determined number of timesteps.
+	\item The electric sources are deleted.
+	\item The services are deleted in reverse order of creation.
 \end{enumerate}
 
 \section{Compilation targets}
 \subsection{Linux (Debian Experimental)}
-C++20's modules have not been widely implemented for a substantial ammount of time as of 2026.
-Thus a bleeding edge compiler and toolchain is needed.
+C++20's modules have not been widely implemented for a substantial amount of time as of 2026.
+Thus, a bleeding edge compiler and toolchain is needed.
 \inputminted[bgcolor=codeBg, tabsize=4, breaklines=true, linenos=true]{bash}{\subfix{build-debian.sh}}
 \subsection{Linux (Arch Linux)}
 Arch Linux as a rolling release distribution has no problems providing the latest software.
-Plus the Arch Linux User Repository (AUR) has niche packages.
+In addition, the Arch Linux User Repository (AUR) has niche packages.
 Even if a software is not packaged, you can just package it yourself.
 As of 2026 I am the maintainer of Arch Linux's Shader Slang package\footnote{\url{https://aur.archlinux.org/packages/shader-slang}}.
 \inputminted[bgcolor=codeBg, tabsize=4, breaklines=true, linenos=true]{bash}{\subfix{build-arch.sh}}
