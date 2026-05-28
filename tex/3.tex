@@ -44,9 +44,10 @@ The flow of the program from the CLI is as follows:
 	\item Basic services are instantiated.
 	\item The backend to be instantiated is selected from the command line arguments. (In Figure \ref{fig:fdtd_lucuma_service_graph} you can see all the services that are instantiated by the backend service)
 	\item A new ECS entity is created and the simulation state is attached as a component.
-    \item The electric sources are attached to new entities.
+	\item The electric sources are attached to new entities.
 	\item The simulation iterates for a determined number of timesteps.
 	\item The electric sources are deleted.
+	\item The simulation state is deleted.
 	\item The services are deleted in reverse order of creation.
 \end{enumerate}
 
@@ -62,7 +63,11 @@ Even if a software is not packaged, you can just package it yourself.
 As of 2026 I am the maintainer of Arch Linux's Shader Slang package\footnote{\url{https://aur.archlinux.org/packages/shader-slang}}.
 \inputminted[bgcolor=codeBg, tabsize=4, breaklines=true, linenos=true]{bash}{\subfix{build-arch.sh}}
 \subsection{Linux (any other x86 distribution)}
-The version of the GPU driver must be the same version as the host one for the Vulkan acceleration to work.
+This target primary purpose is to be run on UTEC's HPC cluster Khipu.
+But student users do not have the permission to install new packages and installing all FDTD Lúcuma's dependencies
+manually would be a time intensive task.
+Junest\cite{junest} solves that problem by creating a nested Arch Linux environment that does not need root user privileges to use.
+Unlike bare-metal Arch Linux, inside this new environment the version of the GPU driver must be the same version as the host one for the Vulkan acceleration to work.
 \inputminted[bgcolor=codeBg, tabsize=4, breaklines=true, linenos=true]{bash}{\subfix{build-junest.sh}}
 \subsection{MacOS}
 MacOS does not support Vulkan natively.
