@@ -73,7 +73,9 @@ Unlike bare-metal Arch Linux, inside this new environment the version of the GPU
 MacOS does not support Vulkan natively.
 Instead, it has a layer over Metal named MoltenVK\cite{moltenvk}.
 \inputminted[bgcolor=codeBg, tabsize=4, breaklines=true, linenos=true]{bash}{\subfix{build-macos.sh}}
-\subsection{Android (Termux)}
+\subsection{Android (Unrooted Termux)}
+As of 2025 most Android devices still only support up to Vulkan 1.1\cite{android_vulkan}.
+Some extensions required by Ftdd Lucuma are not widely available, which forces it to use fallbacks that are not as performant.
 \inputminted[bgcolor=codeBg, tabsize=4, breaklines=true, linenos=true]{bash}{\subfix{build-termux.sh}}
 
 \end{document}
