@@ -52,6 +52,8 @@ The flow of the program from the CLI is as follows:
 \end{enumerate}
 
 \section{Compilation targets}
+As one of the objectives of Fdtd Lucuma is being portable we tried to compile it on every Unix\footnote{Windows is out of scope} based system that we had access to.
+
 \subsection{Linux (Debian Experimental)}
 C++20's modules have not been widely implemented for a substantial amount of time as of 2026.
 Thus, a bleeding edge compiler and toolchain is needed.
@@ -64,7 +66,7 @@ As of 2026 I am the maintainer of Arch Linux's Shader Slang package\footnote{\ur
 \inputminted[bgcolor=codeBg, tabsize=4, breaklines=true, linenos=true]{bash}{\subfix{build-arch.sh}}
 \subsection{Linux (any other x86 distribution)}
 This target primary purpose is to be run on UTEC's HPC cluster Khipu.
-But student users do not have the permission to install new packages and installing all FDTD Lúcuma's dependencies
+As student users do not have the permission to install new packages and installing all Fdtd Lucuma's dependencies
 manually would be a time intensive task.
 Junest\cite{junest} solves that problem by creating a nested Arch Linux environment that does not need root user privileges to use.
 Unlike bare-metal Arch Linux, inside this new environment the version of the GPU driver must be the same version as the host one for the Vulkan acceleration to work.
@@ -76,6 +78,7 @@ Instead, it has a layer over Metal named MoltenVK\cite{moltenvk}.
 \subsection{Android (Unrooted Termux)}
 As of 2025 most Android devices still only support up to Vulkan 1.1\cite{android_vulkan}.
 Some extensions required by Ftdd Lucuma are not widely available, which forces it to use fallbacks that are not as performant.
+Therefore this target tends to be slower than any other target that has an up to date version of Vulkan.
 \inputminted[bgcolor=codeBg, tabsize=4, breaklines=true, linenos=true]{bash}{\subfix{build-termux.sh}}
 
 \end{document}
