@@ -11,8 +11,11 @@
 \subsection{Yee's algorithm}
 
 The finite-difference time-domain (FDTD) method\cite{ufdtd} is used to aproximate electromagnetic fields over time.
-It consists on a pair of ``update equations'' based on discretized versions of Ampère's law and Faraday's law.
-The core of fdtd-lucuma's simulation loop at each time step consists of those two equations, additive electric sources and the boundary conditions of each field and component.
+It consists on a pair of ``update equations'' based on discretized versions of Ampère's law and Faraday's law that are called $t$ times.
+Each equation takes the previous iteration's fields and some constants from the material properties as inputs and sets the current iteration electric or magnetic field.
+
+The core of Fdtd Lucuma's simulation loop at each time step consists of the previously mentioned two equations, one or more additive electric sources and the boundary conditions of each field and component.
+Fdtd Lucuma currently only has the gaussian source as is sole source implementation and the Absorbing boundary condition as the boundary implementation.
 
 \begin{figure}[H]
 	\centering
@@ -177,6 +180,14 @@ end
 	\Eupdate{z}{y}{x}{\coords{}{}{0.5}}{\coords{0.5}{}{0.5}}{\coords{-0.5}{}{0.5}}{\coords{}{0.5}{0.5}}{\coords{}{-0.5}{0.5}}
 \end{split}
 \end{equation}
+
+\subsubsection{Gaussian source}
+\begin{equation}
+%TODO
+\end{equation}
+
+\subsubsection{Absorbing boundary condition}
+%TODO
 
 
 \section{Julia + CUDA}
