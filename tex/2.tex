@@ -54,6 +54,7 @@ Fdtd Lucuma currently only has the gaussian source as is sole source implementat
 	\item $\mu$: Permeability of a material.
 	\item $\epsilon$: Permittivity of a material.
 	\item $C\{e,h\}\{x,y,z\}\{e,h\}$: Coefficients.
+	\item $Cr$: Courant number.
 \end{itemize}
 
 \directlua{
@@ -85,11 +86,73 @@ function fmt(x)
 	end
 end
 
+function flatfmt(n, label)
+	if n == "" then
+		return label
+	end
+
+	return n
+end
+
 function coords(a,b,c)
 	tex.sprint(
 		"\\left[m" .. fmt(a) .. ",n" .. fmt(b) .. ",p" .. fmt(c) .. "\\right]"
 	)
 end
+
+function flatcoords(a,b,c)
+	return "\\left[" .. flatfmt(a, "m") .. "," .. flatfmt(b, "n") .. "," .. flatfmt(c, "p") .. "\\right]"
+end
+
+function abcComponent(c, coords, deltaCoords)
+	tex.sprint("\\ABCComponent{"..c.."}{"..coords.."}{"..deltaCoords.."}\\\\")
+end
+
+function side2CoordsCommon(c, i)
+	if c == "x" then
+		return flatcoords(i,"","")
+	elseif c == "y" then
+		return flatcoords("",i,"")
+	elseif c == "z" then
+		return flatcoords("","",i)
+	end
+end
+
+function side2Coords(c, side)
+	local i = (function() if side == "top" then return c else return "1" end end)()
+
+	return side2CoordsCommon(c, i)
+end
+
+function side2DeltaCoords(c, side)
+	local i = (function() if side == "top" then return c .. "-1" else return "2" end end)()
+
+	return side2CoordsCommon(c, i)
+end
+
+function other(c, c2)
+	if c == c2 then
+		return
+	end
+
+	abcComponent(c2, side2Coords(c, "bottom"), side2DeltaCoords(c, "bottom"))
+	abcComponent(c2, side2Coords(c, "top"), side2DeltaCoords(c, "top"))
+end
+
+function otherComponents(c)
+	other(c, "x")
+	other(c, "y")
+	other(c, "z")
+end
+
+}
+
+\newcommand{\Sc}{%
+	\ensuremath{\frac{Cr}{\sqrt{\mu*\epsilon}}}%
+}
+
+\newcommand{\ABCComponent}[3]{%
+	\ensuremath{E_{#1}^{q+1}#2 &= E_{#1}^q#2 + \frac{\Sc-1}{\Sc+1}*\left(E_{#1}^{q}#3-E_{#1}^{q}#2\right)}%
 }
 
 \newcommand{\coords}[3]{%
@@ -98,6 +161,23 @@ end
 			"\luaescapestring{#1}",
 			"\luaescapestring{#2}",
 			"\luaescapestring{#3}"
+		)
+	}}%
+}
+
+\newcommand{\flatcoords}[3]{%
+	\ensuremath{\directlua{
+		flatcoords(
+			"\luaescapestring{#1}",
+			"\luaescapestring{#2}",
+			"\luaescapestring{#3}"
+		)
+	}}%
+}
+\newcommand{\otherComponents}[1]{%
+	\ensuremath{\directlua{
+		otherComponents(
+			"\luaescapestring{#1}"
 		)
 	}}%
 }
@@ -189,7 +269,18 @@ end
 \end{equation}
 
 \subsubsection{Absorbing boundary condition}
-%TODO
+
+\newcommand{\EABC}[1]{%
+\begin{equation}%
+\begin{split}%
+	\otherComponents{#1}%
+\end{split}%
+\end{equation}%
+}
+
+\EABC{x}
+\EABC{y}
+\EABC{z}
 
 
 \section{Julia + CUDA}
