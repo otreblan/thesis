@@ -58,10 +58,43 @@ The registry is used to store the simulation data as components.
 	\item The services are deleted in reverse order of creation.
 \end{enumerate}
 
+\section{CLI frontend}
+A simple command line interface that runs a single simulation from the commmand line arguments.
+While also being able to run multiple simulations from a json file.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1\textwidth]{images/cli.png}
+	\caption{Fdtd Lucuma's CLI}
+	\label{fig:fdtd_lucuma_cli}
+\end{figure}
+
+
+\section{GUI frontend}
+An interactive interface made with Dear ImGui.
+It supports multiple indepent simulations.
+Plus it allows the user to modify the simulation's objects in real time.
+While also having a visualizer for each component of the electric and magnetic fields.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1\textwidth]{images/moving_source.png}
+	\caption{Fdtd Lucuma's GUI with a sigle gaussian source that was manually moved}
+	\label{fig:fdtd_lucuma_gui}
+\end{figure}
+
+
 \section{CPU backends}
 The Sequential backend is the simplest of the three.
+At each step it updates each $\{x,y,z\}$ component of the magnetic field, then the components of the electric field, then it applies each source that exists in the EnTT registry and finally the boundary conditions of each top and botom of each component.
+
+In comparison, the parallel backend uses Taskflow to create a task graph.
+It allows for each component of the field updates to be parallelized as they do not have dependencies on each others.
+
 
 \section{GPU backend (Vulkan)}
+The Vulkan backend accelerates the simulation by delegating the field updates to a GPU.
+
 
 % TODO:
 % - It has a lot of boilerplate.
