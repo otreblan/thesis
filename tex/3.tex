@@ -6,7 +6,7 @@
 \newpage
 \chapter{METHODOLOGY}
 
-\section{Structures and flow}
+\section{Overview}
 
 Fdtd Lucuma is a simulator made in C++26.
 It can be used from the command line and from a gui made with Dear ImGui\cite{imgui}.
@@ -31,18 +31,25 @@ Currently it has 9 backends:
 The sequential backend uses plain C++, while the parallel one uses Taskflow\cite{Huang_2022}.
 For the GPU backend, Fdtd Lucuma implements the FDTD method using Vulkan\cite{vulkanspec} Compute Shaders written in Shader Slang\cite{10.1145/3197517.3201380}.
 
+\section{Structure}
+
 \begin{figure}[H]
 	\centering
 	\includesvg[width=1\textwidth]{images/flow.svg}
-	\caption{Fdtd Lucuma's dependency graph}
+	\caption{Fdtd Lucuma's services graph}
 	\label{fig:fdtd_lucuma_service_graph}
 \end{figure}
 
-The flow of the program from the CLI is as follows:
+Fdtd Lucuma is structured in services.
+Each one is lazily instantiated the first time one of it's dependants needs to inject it as a dependency.
+The services communicate with each other using signals via EnTT's dispatcher while also sharing data with EnTT's registry.
+The registry is used to store the simulation data as components.
+
+\section{Flow}
 \begin{enumerate}
 	\item The program starts.
 	\item Basic services are instantiated.
-	\item The backend to be instantiated is selected from the command line arguments. (In Figure \ref{fig:fdtd_lucuma_service_graph} you can see all the services that are instantiated by the backend service)
+	\item The backend to be instantiated is selected from the command line arguments. (As shown in Figure \ref{fig:fdtd_lucuma_service_graph})
 	\item A new ECS entity is created and the simulation state is attached as a component.
 	\item The electric sources are attached to new entities.
 	\item The simulation iterates for a determined number of timesteps.
@@ -51,13 +58,18 @@ The flow of the program from the CLI is as follows:
 	\item The services are deleted in reverse order of creation.
 \end{enumerate}
 
+\section{CPU backends}
+The Sequential backend is the simplest of the three.
+
+\section{GPU backend (Vulkan)}
+
 % TODO:
 % - It has a lot of boilerplate.
 % - Vulkan shanenigans for photonics.
 % - How to use (EnTT) Entity Component System to represent a simulation and its objects
 % - Vulkan Julia?
 
-\section{Benchmarks}
-\inputminted[bgcolor=codeBg, tabsize=4, breaklines=true, linenos=true]{bash}{\subfix{benchmark.sh}}
+%\section{Benchmarks}
+%\inputminted[bgcolor=codeBg, tabsize=4, breaklines=true, linenos=true]{bash}{\subfix{benchmark.sh}}
 
 \end{document}
