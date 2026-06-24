@@ -71,9 +71,9 @@ While also being able to run multiple simulations from a json file.
 
 
 \section{GUI frontend}
-An interactive interface made with Dear ImGui.
-It supports multiple indepent simulations.
-Plus it allows the user to modify the simulation's objects in real time.
+An interactive interface made with Dear ImGui using the Vulkan and GLFW implementations.
+It supports multiple independent simulations.
+Plus it allows the user to add or modify the simulation's objects in real time.
 While also having a visualizer for each component of the electric and magnetic fields.
 
 \begin{figure}[H]
@@ -93,9 +93,30 @@ It allows for each component of the field updates to be parallelized as they do 
 
 
 \section{GPU backend (Vulkan)}
-The Vulkan backend accelerates the simulation by delegating the field updates to a GPU.
+The Vulkan backend accelerates the simulation by delegating the field updates to a GPU in a vendor agnostic way.
 Unlike the previous backends, to use Vulkan a lot of boilerplate is needed.
+At startup time this backend instantiates an internal Vulkan Compute service, which in turn instantiates many Vulkan related services.
+Which are the following listed in order of construction:
+\begin{itemize}
+	\item \texttt{lucuma::services::vulkan::Context}
+	\item \texttt{lucuma::services::vulkan::Core}
+	\item \texttt{lucuma::services::vulkan::Device}
+	\item \texttt{lucuma::services::vulkan::Allocator}
+	\item \texttt{lucuma::services::vulkan::ShaderLoader}
+	\item \texttt{lucuma::services::vulkan::Compute}
+\end{itemize}
 
+The \texttt{Context} service holds the \texttt{vulkan::raii::Context} used to create all raii\footnote{Almost all the handles used by the services are raii. For conciseness they will be refered using their C equivalents.} Vulkan objects.
+\texttt{Core} holds the \texttt{VkPhysicalDevice} and \texttt{VkInstance} and checks if the physical device is suitable by having all the required extensions and layers. \texttt{Device} uses the physical device to create and hold the \texttt{VkDevice} while also querying and selecting the best queue families for compute, graphics and presenting.
+On the other hand \texttt{Allocator} is a wrapper around Vulkan Memory Allocator\citep{vma} that can be used to allocate \texttt{VkBuffer}s.
+\texttt{ShaderLoader} is used to create \texttt{VkShaderModule}s from a file path. Which in turn are used to create compute or graphics \texttt{VkPipeline}s.
+
+The \texttt{Compute} service holds the \texttt{VkQueue} and \texttt{VkCommandPool} used to send compute commands to the GPU.
+When the simulation starts or when the any of it's objects change, the backend creates or recreates a single \texttt{CommandBuffer} and multiple \texttt{VkPipeline} and \texttt{VkBuffer}s.
+The backend at each simulation step resets the \texttt{VkCommandBuffer}.
+For each pipeline of the simulation the backend fills it with \texttt{vkCmdBindPipelines}, \texttt{vkCmdBindDescriptorSets}, \texttt{vkCmdPushConstants} and \texttt{vkCmdDispatch}.
+To ensure proper synchronization between dispatches the backend uses \texttt{vkCmdPipelineBarrier2} between fields.
+Finally the backend submits the commands, waits until the work finishes and continues with the next step.
 
 % TODO:
 % - It has a lot of boilerplate.
