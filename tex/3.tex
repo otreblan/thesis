@@ -43,7 +43,7 @@ For the GPU backend, Fdtd Lucuma implements the FDTD method using Vulkan\cite{vu
 Fdtd Lucuma is structured in services.
 Each one is lazily instantiated the first time one of it's dependants needs to inject it as a dependency.
 The services communicate with each other using signals via EnTT's dispatcher while also sharing data with EnTT's registry.
-The registry is used to store the simulation data as components.
+The registry is used to store the simulation objects as entities with components, this allows the backends to iterate them in a cache-friendly way.
 
 \section{Flow}
 \begin{enumerate}
