@@ -71,10 +71,10 @@ While also being able to run multiple simulations from a json file.
 
 
 \section{GUI frontend}
-An interactive interface made with Dear ImGui using the Vulkan and GLFW implementations.
-It supports multiple independent simulations.
+An interactive interface made with Dear ImGui using it's Vulkan and GLFW implementations.
+It supports multiple independent simulations each one with it's own private EnTT registry for easier parallism.
 Plus it allows the user to add or modify the simulation's objects in real time.
-While also having a visualizer for each component of the electric and magnetic fields.
+While also having a heatmap visualizer for each component of the electric and magnetic fields.
 
 \begin{figure}[H]
 	\centering
@@ -88,8 +88,11 @@ While also having a visualizer for each component of the electric and magnetic f
 The Sequential backend is the simplest of the three.
 At each step it updates each $\{x,y,z\}$ component of the magnetic field, then the components of the electric field, then it applies each source that exists in the EnTT registry and finally the boundary conditions of each top and botom of each component.
 
-In comparison, the parallel backend uses Taskflow to create a task graph.
-It allows for each component of the field updates to be parallelized as they do not have dependencies on each others.
+The parallel backend reuses most of the code from the sequential backend.
+But it uses Taskflow to create a coarse task graph.
+By wrapping each field component, source and boundary update in a task.
+Then it creates a directed graph from the task's dependencies.
+This allows for each component of the field updates to be parallelized as they do not have dependencies on each other.
 
 
 \section{GPU backend (Vulkan)}
