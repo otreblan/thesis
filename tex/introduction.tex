@@ -17,13 +17,12 @@ To accelerate electromagnetic simulations on non Nvidia GPUs.
 \subsection*{Specific Objectives}
 \begin{itemize}
 	\item To have a portable FDTD simulator with Vulkan shaders.
-	\item To be able to execute it on multiple targets.
+	\item To be able to execute it on multiple targets in a vendor agnostic way.
 	\item To have a comparision of execution times between each target.
 \end{itemize}
 
 \introsection{Justification}
-%TODO: Steam hardware citation
-Even if Nvidia's GPUs are the most commonly used on Windows PCs there other environments where it is not as common to have one.
+Even if Nvidia's GPUs are the most commonly used on Windows PCs\citep{steam_hardware} there other environments where it is not as common to have one.
 Mobile devices, embedded devices, jailbroken consoles or even Apple's hardware\footnote{Via MoltenVK} can run Vulkan, and thus be able to have GPU accelerated compute without having a dependency on any propietary API.
 
 
