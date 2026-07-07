@@ -10,7 +10,7 @@
 
 Fdtd Lucuma is a simulator made in C++26.
 It can be used from the command line and from a gui made with Dear ImGui\cite{imgui}.
-Internally it is structured using Entity Component System (ECS) with EnTT\cite{entt} and with swappable services using dependency injection.
+Internally it is structured using Entity Component System (ECS) with EnTT\cite{entt} and with swappable services using a handwritten dependency injector.
 From which the \texttt{frontend} (cli or gui) consumes one of the \texttt{backends}.
 Currently it has 9 backends:
 
@@ -46,6 +46,11 @@ The services communicate with each other using signals via EnTT's dispatcher whi
 The registry is used to store the simulation objects as entities with components, this allows the backends to iterate them in a cache-friendly way.
 
 \section{Entity Component System}
+As mentioned before, Fdtd Lucuma uses EnTT an Entity Component System library.
+Mainlly for to store the simulation metadata and objects as \emph{components} related to \emph{entities} inside a EnTT registry.
+This approach allows for each service (\emph{system}), to iterate over the data in a cache friendly way.
+Moreover, each simulation has its own private EnTT registry to avoid sharing when running multiple simulations in parallel.
+
 % EnTT
 % Cache friendly
 % Entities and components
@@ -58,9 +63,10 @@ The registry is used to store the simulation objects as entities with components
 	\item Basic services are instantiated.
 	\item The backend to be instantiated is selected from the command line arguments. (As shown in Figure \ref{fig:fdtd_lucuma_service_graph})
 	\item A new ECS entity is created and the simulation state is attached as a component.
-	\item The electric sources are attached to new entities.
+	\item A private EnTT registry is attached as a component to the simulation entity.
+	\item The electric sources are attached to new entities in the private registry.
 	\item The simulation iterates for a determined number of timesteps.
-	\item The electric sources are deleted.
+	\item The private registry and all it's contents are deleted.
 	\item The simulation state is deleted.
 	\item The services are deleted in reverse order of creation.
 \end{enumerate}
