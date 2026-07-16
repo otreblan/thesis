@@ -11,7 +11,7 @@
 \subsection{Yee's algorithm}
 
 The finite-difference time-domain (FDTD) method\cite{ufdtd} is used to aproximate electromagnetic fields over time.
-It consists on a pair of ``update equations'' based on discretized versions of Ampère's law and Faraday's law that are called $t$ times.
+It consists on a pair of ``update equations'' based on discrete versions of Ampère's law and Faraday's law that are called $t$ times.
 Each equation takes the previous iteration's fields and some constants from the material properties as inputs and sets the current iteration electric or magnetic field.
 
 The core of Fdtd Lucuma's simulation loop at each time step consists of the previously mentioned two equations, one or more additive electric sources and the boundary conditions of each field and component.
@@ -293,8 +293,8 @@ Here is an example, a kernel that sums two arrays value-wise and sets the result
 Vulkan\cite{vulkanspec} is a low-level C API for graphics and compute in GPUs.
 Unlike CUDA, which only runs on Nvidia hardware natively\footnote{With ZLUDA is posible to run CUDA programs in Radeon hardware.}, it has a wider range of compatible GPU hardware\cite{vulkandb}.
 
-In OpenGL, Vulkan's predecesor, the shader source file can be passed directly to the driver, but Vulkan requires
-for each shader to be compiled into a spirv file, loaded into a shader module\footnote{From Vulkan 1.4 onwards the \texttt{*.spv} file path can be passed directly into the creation of the pipeline.} and then finally used as part of a compute pipeline before it can be used.
+In OpenGL, Vulkan's predecessor, the shader source file can be passed directly to the driver, but Vulkan requires
+for each shader to be compiled into a spirv file, loaded into a shader module\footnote{From Vulkan 1.4 onward the \texttt{*.spv} file path can be passed directly into the creation of the pipeline.} and then finally used as part of a compute pipeline before it can be used.
 For that purpose a shader compiler is needed.
 Like Google's \texttt{glslc}\cite{shaderc} or Shader Slang's \texttt{slangc}\cite{10.1145/3197517.3201380} (which is the one that we used in this project).
 
