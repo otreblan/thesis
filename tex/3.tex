@@ -47,8 +47,8 @@ The registry is used to store the simulation objects as entities with components
 
 \section{Entity Component System}
 As mentioned before, Fdtd Lucuma uses EnTT an Entity Component System library.
-Mainlly for to store the simulation metadata and objects as \emph{components} related to \emph{entities} inside a EnTT registry.
-This approach allows for each service (\emph{system}), to iterate over the data in a cache friendly way.
+Mainly for to store the simulation metadata and objects as \emph{components} related to \emph{entities} inside a EnTT registry.
+This approach allows for each service (\emph{system}) to iterate over the data with a better memory locality.
 Moreover, each simulation has its own private EnTT registry to avoid sharing when running multiple simulations in parallel.
 
 % EnTT
