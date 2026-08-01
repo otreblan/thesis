@@ -1,0 +1,41 @@
+Ver el video
+
+Una pasada al texto
+
+Background:
+
+- [ ] En la parte del capítulo 2, un párrafo corto al inicio que diga que el capítulo 2 presenta las definiciones de fdtd, yee y julia cuda. FDTD: Yee's algorithm.
+- [ ] No fdtd-lucuma en background.
+- [ ] Definición general de FDTD.
+3 nuevas cosas:
+- [ ]  Referencia a la figura 2.1 y otras figuras.
+- [ ] Mover las ecuaciones al apéndice.
+- [ ] Pelotitas en el flujo para cada paso y referenciarlos en el resumen. Solo una ecuación. Las variables deben tener formato de texto. Formalmente.
+
+- [ ] Expresar el algoritmo de fdtd 1D en julia cuda como un snippet con referencias al flujo (con pelotitas) y comentado.
+- [ ] El ejemplo de vulkan también debe ser fdtd 1D.
+- [ ] Referenciar el flujo de compilación de vulkan dentro del texto.
+- [ ] ¿Cómo el boilerplate es usado?
+
+
+Metodología:
+
+- [ ] Un párrafo de introducción, un resumen de la implementación.
+- [ ] Backends de julia cuda.
+- [ ] El flujo de lista a diagrama de flujo.
+- [ ] Todos los diagramas de flujo deben seguir el estadard de diagramas de flujo.
+
+- [ ] La estructura también debe tener pelotitas.
+- [ ] En el párrafo de overview referenciar a las pelotitas de la figura de la estructura. Y referenciar secciones futuras.
+
+- [ ] Julia como backend? (aunque es aparte)
+
+- [x] Gpu backend -> vulkan backend
+
+- [ ] Agregar más servicios a la figura de estructura.
+- [ ] Snippets de código de vulkan.
+
+- [ ] Mencionar que funciones de los servicios son usados para la simulación.
+
+- [ ] Los resultados son los speedup del excel de los benchmarks. Comparando backends y julia.
+- [ ] También mostrar android (pero aparte)
