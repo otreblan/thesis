@@ -29,7 +29,7 @@ Currently it has 9 backends:
 \footnotetext{As of 2026, float64's \texttt{exp()} is not implemented in mesa's amd drivers}
 
 The sequential backend uses plain C++, while the parallel one uses Taskflow\cite{Huang_2022}.
-For the GPU backend, Fdtd Lucuma implements the FDTD method using Vulkan\cite{vulkanspec} Compute Shaders written in Shader Slang\cite{10.1145/3197517.3201380}.
+For the Vulkan backend, Fdtd Lucuma implements the FDTD method using Vulkan\cite{vulkanspec} Compute Shaders written in Shader Slang\cite{10.1145/3197517.3201380}.
 
 \section{Structure}
 
@@ -108,7 +108,7 @@ Then it creates a directed graph from the task's dependencies.
 This allows for each component of the field updates to be parallelized as they do not have dependencies on each other.
 
 
-\section{GPU backend (Vulkan)}
+\section{Vulkan backend}
 The Vulkan backend accelerates the simulation by delegating the field updates to a GPU in a vendor agnostic way.
 Unlike the previous backends, to use Vulkan a lot of boilerplate is needed.
 At startup time this backend instantiates an internal Vulkan Compute service, which in turn instantiates many Vulkan related services.
