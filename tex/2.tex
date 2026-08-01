@@ -17,26 +17,41 @@ Each equation takes the previous iteration's fields and some constants from the 
 The core of Fdtd Lucuma's simulation loop at each time step consists of the previously mentioned two equations, one or more additive electric sources and the boundary conditions of each field and component.
 Fdtd Lucuma currently only has the gaussian source as is sole source implementation and the Absorbing boundary condition as the boundary implementation.
 
+\tikzstyle{startstop} = [rectangle, rounded corners, minimum width=3cm, minimum height=1cm,text centered, draw=black, fill=red!30]
+\tikzstyle{io} = [trapezium, trapezium left angle=70, trapezium right angle=110, minimum width=3cm, minimum height=1cm, text centered, draw=black, fill=blue!30]
+\tikzstyle{process} = [rectangle, minimum width=3cm, minimum height=1cm, text centered, draw=black, fill=orange!30]
+\tikzstyle{decision} = [diamond, minimum width=3cm, minimum height=1cm, text centered, draw=black, fill=green!30]
+
+\tikzstyle{arrow} = [thick,->,>=stealth]
+
 \begin{figure}[H]
 	\centering
 	\begin{tikzpicture}[
 			transform shape,
-			vertex/.style={draw, ellipse, thick},
+			node distance=1cm
 		]
-		\node[vertex] (A) at (0,0) {Update magnetic $\{x,y,z\}$ fields};
-		\node[vertex] (B) [below=of A] {Update electric $\{x,y,z\}$ fields};
-		\node[vertex] (C) [below=of B] {Apply sources};
-		\node[vertex] (D) [below=of C] {Boundary conditions};
 
-		\path[-{Triangle[length=5]}, thick]
-			(A) edge (B)
-			(B) edge (C)
-			(C) edge (D)
-			(D.west) edge[bend left] (A.west)
-		;
+		\node[startstop] (start) {Start};
+
+		\node[decision, below=of start, yshift=0.25cm] (while) {Can step?};
+
+		\node[startstop, right=of while] (end) {End};
+
+		\node[process, below=of while] (updateH) {Update magnetic $\{x,y,z\}$ fields};
+		\node[process, below=of updateH] (updateE) {Update electric $\{x,y,z\}$ fields};
+		\node[process, below=of updateE] (sources) {Apply sources};
+		\node[process, below=of sources] (abc) {Apply boundary conditions};
+
+		\draw[arrow] (start) -- (while);
+		\draw[arrow] (while) -- node[anchor=south] {No} (end);
+		\draw[arrow] (while) -- node[anchor=east] {Yes} (updateH);
+		\draw[arrow] (updateH) -- (updateE);
+		\draw[arrow] (updateE) -- (sources);
+		\draw[arrow] (sources) -- (abc);
+		\draw[arrow] (abc.west) -| ++(-2,0) |- (while.west);
 
 	\end{tikzpicture}
-	\caption{Simulation step sequence}
+	\caption{Simulation step flowchart}
 	\label{fig:fdtd_lucuma_step}
 \end{figure}
 
