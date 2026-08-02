@@ -17,13 +17,6 @@ Each equation takes the previous iteration's fields and some constants from the 
 The core of Fdtd Lucuma's simulation loop at each time step consists of the previously mentioned two equations, one or more additive electric sources and the boundary conditions of each field and component.
 Fdtd Lucuma currently only has the gaussian source as is sole source implementation and the Absorbing boundary condition as the boundary implementation.
 
-\tikzstyle{startstop} = [rectangle, rounded corners, minimum width=3cm, minimum height=1cm,text centered, draw=black, fill=red!30]
-\tikzstyle{io} = [trapezium, trapezium left angle=70, trapezium right angle=110, minimum width=3cm, minimum height=1cm, text centered, draw=black, fill=blue!30]
-\tikzstyle{process} = [rectangle, minimum width=3cm, minimum height=1cm, text centered, draw=black, fill=orange!30]
-\tikzstyle{decision} = [diamond, minimum width=3cm, minimum height=1cm, text centered, draw=black, fill=green!30]
-
-\tikzstyle{arrow} = [thick,->,>=stealth]
-
 \begin{figure}[H]
 	\centering
 	\begin{tikzpicture}[
@@ -37,10 +30,10 @@ Fdtd Lucuma currently only has the gaussian source as is sole source implementat
 
 		\node[startstop, right=of while] (end) {End};
 
-		\node[process, below=of while] (updateH) {Update magnetic $\{x,y,z\}$ fields};
-		\node[process, below=of updateH] (updateE) {Update electric $\{x,y,z\}$ fields};
-		\node[process, below=of updateE] (sources) {Apply sources};
-		\node[process, below=of sources] (abc) {Apply boundary conditions};
+		\node[process, below=of while] (updateH) {\blackcircle{1} Update magnetic $\{x,y,z\}$ fields};
+		\node[process, below=of updateH] (updateE) {\blackcircle{2} Update electric $\{x,y,z\}$ fields};
+		\node[process, below=of updateE] (sources) {\blackcircle{3} Apply sources};
+		\node[process, below=of sources] (abc) {\blackcircle{4} Apply boundary conditions};
 
 		\draw[arrow] (start) -- (while);
 		\draw[arrow] (while) -- node[anchor=south] {No} (end);

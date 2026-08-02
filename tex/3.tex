@@ -58,18 +58,51 @@ Moreover, each simulation has its own private EnTT registry to avoid sharing whe
 % idk
 
 \section{Flow}
-\begin{enumerate}
-	\item The program starts.
-	\item Basic services are instantiated.
-	\item The backend to be instantiated is selected from the command line arguments. (As shown in Figure \ref{fig:fdtd_lucuma_service_graph})
-	\item A new ECS entity is created and the simulation state is attached as a component.
-	\item A private EnTT registry is attached as a component to the simulation entity.
-	\item The electric sources are attached to new entities in the private registry.
-	\item The simulation iterates for a determined number of timesteps.
-	\item The private registry and all it's contents are deleted.
-	\item The simulation state is deleted.
-	\item The services are deleted in reverse order of creation.
-\end{enumerate}
+
+\newpage
+
+\begin{figure}[H]
+	\centering
+	\begin{tikzpicture}[
+			transform shape,
+			node distance=1cm
+		]
+
+		\node[startstop] (start) {Start};
+
+		\node[io, below=of start] (select) {Configure simulation parameters};
+
+		\node[process, below=of select] (services) {\blackcircle{1} Start basic services and selected backend. (As shown in Figure \ref{fig:fdtd_lucuma_service_graph})};
+		\node[process, below=of services] (entity) {\blackcircle{2} Create a new ECS entity};
+		\node[process, below=of entity] (simulation) {\blackcircle{3} Attach the simulation state and a private registry with the sources to \blackcircle{2}};
+		\node[decision, below=of simulation, yshift=0.25cm] (while) {Can step?};
+
+
+		\node[process, below=of while] (updateH) {\blackcircle{4} Update magnetic $\{x,y,z\}$ fields};
+		\node[process, below=of updateH] (updateE) {\blackcircle{5} Update electric $\{x,y,z\}$ fields};
+		\node[process, below=of updateE] (sources) {\blackcircle{6} Apply sources};
+		\node[process, below=of sources] (abc) {\blackcircle{7} Apply boundary conditions};
+
+		\node[process, right=2cm of while] (cleanup) {Cleanup \blackcircle{3}, \blackcircle{2} and \blackcircle{1}};
+		\node[startstop, below=of cleanup] (end) {End};
+
+		\draw[arrow] (start) -- (select);
+		\draw[arrow] (select) -- (services);
+		\draw[arrow] (services) -- (entity);
+		\draw[arrow] (entity) -- (simulation);
+		\draw[arrow] (simulation) -- (while);
+		\draw[arrow] (while) -- node[anchor=south] {No} (cleanup);
+		\draw[arrow] (cleanup) -- (end);
+		\draw[arrow] (while) -- node[anchor=east] {Yes} (updateH);
+		\draw[arrow] (updateH) -- (updateE);
+		\draw[arrow] (updateE) -- (sources);
+		\draw[arrow] (sources) -- (abc);
+		\draw[arrow] (abc.west) -| ++(-2,0) |- (while.west);
+
+	\end{tikzpicture}
+	\caption{Simulation flowchart}
+	\label{fig:fdtd_lucuma_flow}
+\end{figure}
 
 \section{CLI frontend}
 A simple command line interface that runs a single simulation from the commmand line arguments.
