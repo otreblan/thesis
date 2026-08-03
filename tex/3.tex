@@ -78,8 +78,8 @@ Moreover, each simulation has its own private EnTT registry to avoid sharing whe
 		\node[decision, below=of simulation, yshift=0.25cm] (while) {Can step?};
 
 
-		\node[process, below=of while] (updateH) {\blackcircle{step:magnetic} Update magnetic $\{x,y,z\}$ fields};
-		\node[process, below=of updateH] (updateE) {\blackcircle{step:electric} Update electric $\{x,y,z\}$ fields};
+		\node[process, below=of while] (updateH) {\blackcircle{step:magnetic} Update magnetic $H_{\{x,y,z\}}$ fields};
+		\node[process, below=of updateH] (updateE) {\blackcircle{step:electric} Update electric $E_{\{x,y,z\}}$ fields};
 		\node[process, below=of updateE] (sources) {\blackcircle{step:sources} Apply sources};
 		\node[process, below=of sources] (abc) {\blackcircle{step:abc} Apply boundary conditions};
 

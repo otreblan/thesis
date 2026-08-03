@@ -15,7 +15,7 @@ It consists on a pair of ``update equations'' based on discrete versions of Amp√
 Each equation takes the previous iteration's fields and some constants from the material properties as inputs and sets the current iteration electric or magnetic field.
 
 The core of Fdtd Lucuma's simulation loop at each time step consists of the previously mentioned two equations, one or more additive electric sources and the boundary conditions of each field and component.
-Fdtd Lucuma currently only has the gaussian source as is sole source implementation and the Absorbing boundary condition as the boundary implementation.
+%Fdtd Lucuma currently only has the gaussian source as is sole source implementation and the Absorbing boundary condition as the boundary implementation.
 
 \begin{figure}[H]
 	\centering
@@ -30,8 +30,8 @@ Fdtd Lucuma currently only has the gaussian source as is sole source implementat
 
 		\node[startstop, right=of while] (end) {End};
 
-		\node[process, below=of while] (updateH) {\blackcircle{step:magnetic} Update magnetic $\{x,y,z\}$ fields};
-		\node[process, below=of updateH] (updateE) {\blackcircle{step:electric} Update electric $\{x,y,z\}$ fields};
+		\node[process, below=of while] (updateH) {\blackcircle{step:magnetic} Update magnetic $H_{\{x,y,z\}}$ fields};
+		\node[process, below=of updateH] (updateE) {\blackcircle{step:electric} Update electric $E_{\{x,y,z\}}$ fields};
 		\node[process, below=of updateE] (sources) {\blackcircle{step:sources} Apply sources};
 		\node[process, below=of sources] (abc) {\blackcircle{step:abc} Apply boundary conditions};
 
@@ -315,9 +315,9 @@ Like Google's \texttt{glslc}\cite{shaderc} or Shader Slang's \texttt{slangc}\cit
 			scale=0.9
 		]
 		\node[vertex] (A) at (0,0) {\texttt{*.spv}};
-		\node[vertex] (B) [above left=of A] {\texttt{*.slang}};
-		\node[vertex] (C) [below left=of A] {\texttt{*.glsl}};
 		\node[vertex] (F) [left=of A] {\texttt{*.hlsl}};
+		\node[vertex] (B) [above =of F] {\texttt{*.slang}};
+		\node[vertex] (C) [below=of F] {\texttt{*.glsl}};
 		\node[vertex] (D) [right=of A] {\texttt{VkShaderModule}};
 		\node[vertex] (E) [right=of D] {\texttt{VkPipeline}};
 
