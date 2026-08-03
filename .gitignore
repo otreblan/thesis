@@ -19,3 +19,4 @@ tikz
 *SAVE-ERROR
 *.minted
 _minted-main
+.deps.mk

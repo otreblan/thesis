@@ -1,0 +1,75 @@
+\documentclass[../../main.tex]{subfiles}
+\graphicspath{{\subfix{../../images/}}}
+
+\begin{document}
+
+\chapter{FDTD equations}
+
+\section{3D}
+
+% TODO: Formal variable declaration
+
+\subsection{Variables}
+\begin{itemize}
+	\item $x,y,z,t$: 3D space and time.
+	\item $q \in \mathbb{R}$: Time index.
+	\item $[m,n,p] \in \mathbb{R}^3:$ Spatial index.
+	\item $H_i^q$: Magnetic field component at time $q$. $i \in \{x,y,z\}$
+	\item $E_i^q$: Electric field component at time $q$. $i \in \{x,y,z\}$
+	\item $\sigma$: Electric conductivity of a material.
+	\item $\sigma_m$: Magnetic conductivity of a material.
+	\item $\mu$: Permeability of a material.
+	\item $\epsilon$: Permittivity of a material.
+	\item $C\{e,h\}\{x,y,z\}\{e,h\}$: Coefficients.
+	\item $Cr$: Courant number.
+\end{itemize}
+
+\subsection{Update magnetic field components}
+\begin{equation}
+\begin{split}
+	\Hupdate{x}{y}{z}{\coords{}{0.5}{0.5}}{\coords{}{0.5}{1}}{\coords{}{0.5}{}}{\coords{}{1}{0.5}}{\coords{}{}{0.5}}
+\end{split}
+\end{equation}
+\begin{equation}
+\begin{split}
+	\Hupdate{y}{z}{x}{\coords{0.5}{}{0.5}}{\coords{1}{}{0.5}}{\coords{}{}{0.5}}{\coords{0.5}{}{1}}{\coords{0.5}{}{}}
+\end{split}
+\end{equation}
+\begin{equation}
+\begin{split}
+	\Hupdate{z}{x}{y}{\coords{0.5}{0.5}{}}{\coords{0.5}{1}{}}{\coords{0.5}{}{}}{\coords{1}{0.5}{}}{\coords{}{0.5}{}}
+\end{split}
+\end{equation}
+
+
+\subsection{Update electric field components}
+\begin{equation}
+\begin{split}
+	\Eupdate{x}{z}{y}{\coords{}{0.5}{}}{\coords{0.5}{0.5}{}}{\coords{0.5}{-0.5}{}}{\coords{0.5}{}{0.5}}{\coords{0.5}{}{-0.5}}
+\end{split}
+\end{equation}
+\begin{equation}
+\begin{split}
+	\Eupdate{y}{x}{z}{\coords{}{0.5}{}}{\coords{}{0.5}{0.5}}{\coords{}{0.5}{-0.5}}{\coords{0.5}{0.5}{}}{\coords{-0.5}{0.5}{}}
+\end{split}
+\end{equation}
+\begin{equation}
+\begin{split}
+	\Eupdate{z}{y}{x}{\coords{}{}{0.5}}{\coords{0.5}{}{0.5}}{\coords{-0.5}{}{0.5}}{\coords{}{0.5}{0.5}}{\coords{}{-0.5}{0.5}}
+\end{split}
+\end{equation}
+
+\subsection{Gaussian source}
+\begin{equation}
+\begin{split}
+	E_x^{q+1}\left[m,n,p\right] &= E_x^{q}\left[m,n,p\right] + \exp\left(-\left(\frac{q}{\sigma}\right)^2\right)
+\end{split}
+\end{equation}
+
+\subsection{Absorbing boundary condition}
+
+\EABC{x}
+\EABC{y}
+\EABC{z}
+
+\end{document}

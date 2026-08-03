@@ -89,3 +89,181 @@
 \newcommand{\blackcircleref}[1]{%
 	\blackcirclecommon{\hypersetup{hidelinks}\ref{\thesection:#1}}%
 }
+
+\directlua{
+function fmt(x)
+	if x == "" then
+		return ""
+	end
+
+	local n = tonumber(x)
+
+	if n == 0.5 then
+		return "+\\frac{1}{2}"
+	elseif n == -0.5 then
+		return "-\\frac{1}{2}"
+	elseif n > 0 then
+		if n == math.floor(n) then
+			return "+" .. tostring(math.floor(n))
+		else
+			return "+" .. tostring(n)
+		end
+	elseif n < 0 then
+		if n == math.floor(n) then
+			return tostring(math.floor(n))
+		else
+			return tostring(n)
+		end
+	else
+		return ""
+	end
+end
+
+function flatfmt(n, label)
+	if n == "" then
+		return label
+	end
+
+	return n
+end
+
+function coords(a,b,c)
+	tex.sprint(
+		"\\left[m" .. fmt(a) .. ",n" .. fmt(b) .. ",p" .. fmt(c) .. "\\right]"
+	)
+end
+
+function flatcoords(a,b,c)
+	return "\\left[" .. flatfmt(a, "m") .. "," .. flatfmt(b, "n") .. "," .. flatfmt(c, "p") .. "\\right]"
+end
+
+function abcComponent(c, coords, deltaCoords)
+	tex.sprint("\\ABCComponent{"..c.."}{"..coords.."}{"..deltaCoords.."}\\\\")
+end
+
+function side2CoordsCommon(c, i)
+	if c == "x" then
+		return flatcoords(i,"","")
+	elseif c == "y" then
+		return flatcoords("",i,"")
+	elseif c == "z" then
+		return flatcoords("","",i)
+	end
+end
+
+function side2Coords(c, side)
+	local i = (function() if side == "top" then return c else return "1" end end)()
+
+	return side2CoordsCommon(c, i)
+end
+
+function side2DeltaCoords(c, side)
+	local i = (function() if side == "top" then return c .. "-1" else return "2" end end)()
+
+	return side2CoordsCommon(c, i)
+end
+
+function other(c, c2)
+	if c == c2 then
+		return
+	end
+
+	abcComponent(c2, side2Coords(c, "bottom"), side2DeltaCoords(c, "bottom"))
+	abcComponent(c2, side2Coords(c, "top"), side2DeltaCoords(c, "top"))
+end
+
+function otherComponents(c)
+	other(c, "x")
+	other(c, "y")
+	other(c, "z")
+end
+
+}
+
+\newcommand{\Sc}{%
+	\ensuremath{\frac{Cr}{\sqrt{\mu*\epsilon}}}%
+}
+
+\newcommand{\ABCComponent}[3]{%
+	\ensuremath{E_{#1}^{q+1}#2 &= E_{#1}^q#2 + \frac{\Sc-1}{\Sc+1}*\left(E_{#1}^{q}#3-E_{#1}^{q}#2\right)}%
+}
+
+\newcommand{\coords}[3]{%
+	\ensuremath{\directlua{
+		coords(
+			"\luaescapestring{#1}",
+			"\luaescapestring{#2}",
+			"\luaescapestring{#3}"
+		)
+	}}%
+}
+
+\newcommand{\flatcoords}[3]{%
+	\ensuremath{\directlua{
+		flatcoords(
+			"\luaescapestring{#1}",
+			"\luaescapestring{#2}",
+			"\luaescapestring{#3}"
+		)
+	}}%
+}
+\newcommand{\otherComponents}[1]{%
+	\ensuremath{\directlua{
+		otherComponents(
+			"\luaescapestring{#1}"
+		)
+	}}%
+}
+
+\newcommand{\HHcoeff}[1]{%
+	\ensuremath{\underbrace{\frac{1-\frac{\sigma_m\Delta_t}{2\mu}}{1+\frac{\sigma_m\Delta_t}{2\mu}}}_{Ch#1h}}%
+}
+
+\newcommand{\HEcoeff}[1]{%
+	\ensuremath{\underbrace{\frac{1}{1+\frac{\sigma_m\Delta_t}{2\mu}}}_{Ch#1e}}%
+}
+
+\newcommand{\EEcoeff}[1]{%
+	\ensuremath{\underbrace{\frac{1-\frac{\sigma\Delta_t}{2\epsilon}}{1+\frac{\sigma\Delta_t}{2\epsilon}}}_{Ce#1e}}%
+}
+
+\newcommand{\EHcoeff}[1]{%
+	\ensuremath{\underbrace{\frac{1}{1+\frac{\sigma\Delta_t}{2\epsilon}}}_{Ce#1h}}%
+}
+
+\newcommand{\CommonDelta}[2]{%
+	\ensuremath{\frac{\Delta_t}{#1\Delta_{#2}}}%
+}
+
+\newcommand{\EDelta}[1]{%
+	\ensuremath{\CommonDelta{\mu}{#1}}%
+}
+
+\newcommand{\HDelta}[1]{%
+	\ensuremath{\CommonDelta{\epsilon}{#1}}%
+}
+
+\newcommand{\Hupdate}[8]{%
+	\ensuremath{H_{#1}^{q+\frac{1}{2}} #4 &=%
+	\HHcoeff{#1} H_{#1}^{q-\frac{1}{2}}#4 \\%
+	+& \HEcoeff{#1} \biggl(\EDelta{#3}\left\{E_{#2}^q#5-E_{#2}^q#6\right\} \\%
+		-&\EDelta{#2}\left\{E_{#3}^q#7-E_{#3}^q#8\right\}%
+	\biggl)}%
+}
+
+\newcommand{\Eupdate}[8]{%
+	\ensuremath{E_{#1}^{q+1} #4 &=%
+	\EEcoeff{#1} E_{#1}^{q}#4 \\%
+	+& \EHcoeff{#1} \biggl(\HDelta{#3}\left\{H_{#2}^{q+\frac{1}{2}}#5-H_{#2}^{q+\frac{1}{2}}#6\right\} \\%
+		-&\HDelta{#2}\left\{H_{#3}^{q+\frac{1}{2}}#7-H_{#3}^{q+\frac{1}{2}}#8\right\}%
+	\biggl)}%
+}
+
+\newcommand{\EABC}[1]{%
+\begin{equation}%
+\begin{split}%
+	\otherComponents{#1}%
+\end{split}%
+\end{equation}%
+}
+
