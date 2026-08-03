@@ -72,18 +72,18 @@ Moreover, each simulation has its own private EnTT registry to avoid sharing whe
 
 		\node[io, below=of start] (select) {Configure simulation parameters};
 
-		\node[process, below=of select] (services) {\blackcircle{1} Start basic services and selected backend. (As shown in Figure \ref{fig:fdtd_lucuma_service_graph})};
-		\node[process, below=of services] (entity) {\blackcircle{2} Create a new ECS entity};
-		\node[process, below=of entity] (simulation) {\blackcircle{3} Attach the simulation state and a private registry with the sources to \blackcircle{2}};
+		\node[process, below=of select] (services) {\blackcircle{step:services} Start basic services and selected backend. (As shown in Figure \ref{fig:fdtd_lucuma_service_graph})};
+		\node[process, below=of services] (entity) {\blackcircle{step:entity} Create a new ECS entity};
+		\node[process, below=of entity] (simulation) {\blackcircle{step:state} Attach the simulation state and a private registry with the sources to \blackcircleref{step:entity}};
 		\node[decision, below=of simulation, yshift=0.25cm] (while) {Can step?};
 
 
-		\node[process, below=of while] (updateH) {\blackcircle{4} Update magnetic $\{x,y,z\}$ fields};
-		\node[process, below=of updateH] (updateE) {\blackcircle{5} Update electric $\{x,y,z\}$ fields};
-		\node[process, below=of updateE] (sources) {\blackcircle{6} Apply sources};
-		\node[process, below=of sources] (abc) {\blackcircle{7} Apply boundary conditions};
+		\node[process, below=of while] (updateH) {\blackcircle{step:magnetic} Update magnetic $\{x,y,z\}$ fields};
+		\node[process, below=of updateH] (updateE) {\blackcircle{step:electric} Update electric $\{x,y,z\}$ fields};
+		\node[process, below=of updateE] (sources) {\blackcircle{step:sources} Apply sources};
+		\node[process, below=of sources] (abc) {\blackcircle{step:abc} Apply boundary conditions};
 
-		\node[process, right=2cm of while] (cleanup) {Cleanup \blackcircle{3}, \blackcircle{2} and \blackcircle{1}};
+		\node[process, right=2cm of while] (cleanup) {Cleanup \blackcircleref{step:state}, \blackcircleref{step:entity} and \blackcircleref{step:services}};
 		\node[startstop, below=of cleanup] (end) {End};
 
 		\draw[arrow] (start) -- (select);

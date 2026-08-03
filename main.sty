@@ -69,7 +69,23 @@
 \tikzstyle{arrow} = [thick,->,>=stealth]
 \tikzstyle{refbadge} = [circle, fill=black, text=white, inner sep=1pt, minimum size=4mm, font=\bfseries\scriptsize]
 
-\newcommand{\blackcircle}[1]{%
+\newcounter{blackcirclestep}[section]
+
+\renewcommand{\theblackcirclestep}{%
+	\arabic{blackcirclestep}%
+}
+
+\newcommand{\blackcirclecommon}[1]{%
 	\tikz[baseline=(n.base)]%
 		\node[refbadge] (n) {#1};%
+}
+
+\newcommand{\blackcircle}[1]{%
+	\refstepcounter{blackcirclestep}%
+	\label{\thesection:#1}%
+	\blackcirclecommon{\theblackcirclestep}%
+}
+
+\newcommand{\blackcircleref}[1]{%
+	\blackcirclecommon{\ref*{\thesection:#1}}%
 }
