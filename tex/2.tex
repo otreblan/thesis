@@ -53,30 +53,57 @@ On top of that,
 \subsection{1D equation}
 
 For the sake of conciseness only the one-dimensional equations will be shown. The full 3D equations are in Appendix \ref{section:fdtd_3d}.
-%TODO variables
+
+\subsubsection{Discrete notation}
+
+\citet{ufdtd} used the following notation to represent the discretized versions of the electric $E$ and magnetic $H$ fields respectively.
+
+\begin{equation}
+	\overbrace{E_z(x,t)}^{\text{continuous}} = E_z(m\Delta_x, q\Delta_t) = \overbrace{E_z^q[m]}^{\text{discrete}}
+\end{equation}
+\begin{equation}
+	H_y(x,t) = H_y(m\Delta_x, q\Delta_t) = H_y^q[m]
+\end{equation}
+
+Where $m,q$ are the spatial and temporal step indices, and $\Delta_x,\Delta_t$ are their respective offsets.
+When using 3 spatial dimensions $m,n,p$ are the $x,y,z$ indices.
 
 \subsubsection{Magnetic field update}
 
+$\mu$ is the permeability of the material.
+
 \begin{equation}
+	\text{\blackcircleref{step:magnetic}\quad}
 	H_y^{q+\frac{1}{2}} \left[m+\frac{1}{2}\right] = H_y^{q-\frac{1}{2}} \left[m+\frac{1}{2}\right] +\frac{\Delta_t}{\mu\Delta_x} \left(E_z^q\left[m+1\right]-E_z^q\left[m\right]\right)
 \end{equation}
 
 \subsubsection{Electric field update}
+
+$\epsilon$ is the permittivity of the material.
+
 \begin{equation}
+	\text{\blackcircleref{step:electric}\quad}
 	E_z^{q+1}\left[m\right] = E_z^{q}\left[m\right] + \frac{\Delta_t}{\epsilon\Delta_x}\left(H_y^{q+\frac{1}{2}}\left[m+\frac{1}{2}\right]-H_y^{q+\frac{1}{2}}\left[m-\frac{1}{2}\right]\right)
 \end{equation}
 
 \subsubsection{Gaussian source}
+
+This source depends on the $q$ temporal step which is scaled by $\sigma$.
 \begin{equation}
+	\text{\blackcircleref{step:sources}\quad}
 	E_z^{q+1}\left[m\right] = E_z^{q}\left[m\right] + \exp\left(-\left(\frac{q}{\sigma}\right)^2\right)
 \end{equation}
 
 \subsubsection{Absorbing boundary conditions}
+$Cr$ is the Courant number.
+
 \begin{equation}
-\begin{split}
-	E_z^{q+1}\left[1\right] &= E_z^{q}\left[1\right] + \frac{\frac{Cr}{\sqrt{\mu*\epsilon}}-1}{\frac{Cr}{\sqrt{\mu*\epsilon}}+1}*\left(E_z^q\left[2\right]-E_z^q\left[1\right]\right) \\
-	E_z^{q+1}\left[x\right] &= E_z^{q}\left[x\right] + \frac{\frac{Cr}{\sqrt{\mu*\epsilon}}-1}{\frac{Cr}{\sqrt{\mu*\epsilon}}+1}*\left(E_z^q\left[x-1\right]-E_z^q\left[x\right]\right) \\
-\end{split}
+	\text{\blackcircleref{step:abc}\quad}
+	E_z^{q+1}\left[1\right] = E_z^{q}\left[1\right] + \frac{\frac{Cr}{\sqrt{\mu*\epsilon}}-1}{\frac{Cr}{\sqrt{\mu*\epsilon}}+1}*\left(E_z^q\left[2\right]-E_z^q\left[1\right]\right)
+\end{equation}
+\begin{equation}
+	\text{\blackcircleref{step:abc}\quad}
+	E_z^{q+1}\left[x\right] = E_z^{q}\left[x\right] + \frac{\frac{Cr}{\sqrt{\mu*\epsilon}}-1}{\frac{Cr}{\sqrt{\mu*\epsilon}}+1}*\left(E_z^q\left[x-1\right]-E_z^q\left[x\right]\right)
 \end{equation}
 
 % TODO: Put a single 1D equation here
