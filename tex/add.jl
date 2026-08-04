@@ -21,7 +21,7 @@ function gaussianSource(Ez, pos, sigma, timestep)
 end
 
 function abc(Ez, x, Cr, mu, eps)
-	Sc = Cr / (sqrt(mu * eps))
+	Sc = Cr / sqrt(mu * eps)
 	abcCoef = (Sc - 1) / (Sc + 1)
 
 	CUDA.allowscalar() do
@@ -45,15 +45,19 @@ Hy = CuArray{Float32}(undef, x)
 Ez = CuArray{Float32}(undef, x)
 
 for timestep in 1:1:maxTime
+	# 1
 	@cuda threads = x blocks = 1 updateH(Hy, Ez, x, deltaT, deltaX, mu)
 	CUDA.device_synchronize()
 
+	# 2
 	@cuda threads = x blocks = 1 updateE(Ez, Hy, deltaT, deltaX, eps)
 	CUDA.device_synchronize()
 
+	# 3
 	gaussianSource(Ez, sourcePos, sigma, timestep)
 	CUDA.device_synchronize()
 
+	# 4
 	abc(Ez, x, Cr, mu, eps)
 	CUDA.device_synchronize()
 end

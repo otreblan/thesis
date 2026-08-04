@@ -116,7 +116,7 @@ Here is an example of a 1D FDTD implementation.
 Vulkan\cite{vulkanspec} is a low-level C API for graphics and compute in GPUs.
 Unlike CUDA, which only runs on Nvidia hardware natively\footnote{With ZLUDA is posible to run CUDA programs in Radeon hardware.}, it has a wider range of compatible GPU hardware\cite{vulkandb}.
 
-In OpenGL, Vulkan's predecessor, the shader source file can be passed directly to the driver, but Vulkan requires
+In OpenGL, Vulkan's predecessor, the shader source file can be passed directly to the driver, but as shown in Figure \ref{fig:vulkan_compute_pipeline} Vulkan requires
 for each shader to be compiled into a spirv file, loaded into a shader module\footnote{From Vulkan 1.4 onward the \texttt{*.spv} file path can be passed directly into the creation of the pipeline.} and then finally used as part of a compute pipeline before it can be used.
 For that purpose a shader compiler is needed.
 Like Google's \texttt{glslc}\cite{shaderc} or Shader Slang's \texttt{slangc}\cite{10.1145/3197517.3201380} (which is the one that we used in this project).
@@ -151,11 +151,14 @@ Like Google's \texttt{glslc}\cite{shaderc} or Shader Slang's \texttt{slangc}\cit
 \end{figure}
 
 Using Vulkan Compute Shaders requires writing a considerable amount of boilerplate.
-Therefore the complete version of the sum two arrays example is in the Github repository\footnote{\tiny{\url{https://github.com/fdtd-lucuma/fdtd-lucuma/blob/53fc40cde634b7360941ea330caa1e1fe68697a8/src/services/compute.cpp\#L34}}}:
+Therefore for the 1D example, only the \texttt{*.slang} file will be shown.
 
-\inputminted[bgcolor=codeBg, tabsize=4, breaklines=true, linenos=true]{hlsl}{\subfix{add.slang}}
+\inputminted[bgcolor=codeBg, tabsize=4, breaklines=true, linenos=true]{hlsl}{\subfix{updateH.slang}}
+\inputminted[bgcolor=codeBg, tabsize=4, breaklines=true, linenos=true]{hlsl}{\subfix{updateE.slang}}
+\inputminted[bgcolor=codeBg, tabsize=4, breaklines=true, linenos=true]{hlsl}{\subfix{gaussianSource.slang}}
+\inputminted[bgcolor=codeBg, tabsize=4, breaklines=true, linenos=true]{hlsl}{\subfix{abc.slang}}
 
-\inputminted[bgcolor=codeBg, tabsize=4, breaklines=true, linenos=true]{cpp}{\subfix{add.cpp}}
+%\inputminted[bgcolor=codeBg, tabsize=4, breaklines=true, linenos=true]{cpp}{\subfix{add.cpp}}
 
 
 \end{document}
