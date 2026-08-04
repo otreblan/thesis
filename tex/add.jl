@@ -1,29 +1,56 @@
 using CUDA
 
-# Kernel definition
+# Kernel definitions
 
-function add(C, A, B)
-	i = (blockIdx().x - 1) * blockDim().x + threadIdx().x
+function updateH(Hy, Ez, x, deltaT, deltaX, mu)
+    idx = (blockIdx().x - 1) * blockDim().x + threadIdx().x
 
-	@inbounds C[i] = A[i] + B[i]
-
-	return
+	@inbounds Hy[idx] = Hy[idx] + (deltaT/(mu*deltaX))*(Ez[idx+1] - Ez[idx])
 end
 
-# Variables
+function updateE(Ez, Hy, x, deltaT, deltaX, eps)
+    idx = (blockIdx().x - 1) * blockDim().x + threadIdx().x
 
-A = CuArray{Float32}([1,2,3,4])
-B = CuArray{Float32}([5,6,7,8])
-C = CuArray{Float32}(undef, 4)
+	@inbounds Ez[idx] = Ez[idx] + (deltaT/(eps*deltaX))*(Hy[idx+1] - Hy[idx])
+end
 
-# Calling the kernel
+function gaussianSource(Ez, pos, sigma, timestep)
+	CUDA.allowscalar() do
+		Ez[pos] += exp(-1 * (timestep/sigma)^2)
+	end
+end
 
-@cuda threads=length(A) blocks=1 add(C, A, B)
+function abc(Ez, x, Cr, mu, eps)
+	CUDA.allowscalar() do
+		## TODO
+		#Ez[1] += exp(-1 * (timestep/sigma)^2)
+	end
+end
 
-# Result:
-# julia> C
-# 4-element CuArray{Float32, 1, CUDA.DeviceMemory}:
-#   6.0
-#   8.0
-#  10.0
-#  12.0
+x::Int64 = 100
+Cr::Float32 = 1.0 / sqrt(3.0)
+sigma::Float32 = 10
+sourcePos::Int64 = Int.(floor(x/2))
+deltaT::Float32 = 1.0
+deltaX::Float32 = 1.0
+mu::Float32 = 1.0
+eps::Float32 = 1.0
+
+maxTime::Int64 = 300
+
+Hy = CuArray{Float32}(undef, x)
+Ez = CuArray{Float32}(undef, x)
+
+for timestep in 1:1:maxTime
+	@cuda threads = x blocks = 1 updateH(Hy, Ez, x, deltaT, deltaX, mu)
+	CUDA.device_synchronize()
+
+	@cuda threads = x blocks = 1 updateE(Ez, Hy, x, deltaT, deltaX, eps)
+	CUDA.device_synchronize()
+
+	gaussianSource(Ez, sourcePos, sigma, timestep)
+	CUDA.device_synchronize()
+
+	abc(Ez, x, Cr, mu, eps)
+	CUDA.device_synchronize()
+end
