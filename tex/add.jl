@@ -3,15 +3,15 @@ using CUDA
 # Kernel definitions
 
 function updateH(Hy, Ez, x, deltaT, deltaX, mu)
-    idx = (blockIdx().x - 1) * blockDim().x + threadIdx().x
+	idx = (blockIdx().x - 1) * blockDim().x + threadIdx().x
 
-	@inbounds Hy[idx] = Hy[idx] + (deltaT/(mu*deltaX))*(Ez[idx+1] - Ez[idx])
+	@inbounds Hy[idx] = (idx > x) ? Hy[idx] : (Hy[idx] + (deltaT/(mu*deltaX))*(Ez[idx+1] - Ez[idx]))
 end
 
-function updateE(Ez, Hy, x, deltaT, deltaX, eps)
-    idx = (blockIdx().x - 1) * blockDim().x + threadIdx().x
+function updateE(Ez, Hy, deltaT, deltaX, eps)
+	idx = (blockIdx().x - 1) * blockDim().x + threadIdx().x
 
-	@inbounds Ez[idx] = Ez[idx] + (deltaT/(eps*deltaX))*(Hy[idx+1] - Hy[idx])
+	@inbounds Ez[idx] = (idx == 1) ? Ez[idx] : (Ez[idx] + (deltaT/(eps*deltaX))*(Hy[idx] - Hy[idx-1]))
 end
 
 function gaussianSource(Ez, pos, sigma, timestep)
@@ -21,9 +21,12 @@ function gaussianSource(Ez, pos, sigma, timestep)
 end
 
 function abc(Ez, x, Cr, mu, eps)
+	Sc = Cr / (sqrt(mu * eps))
+	abcCoef = (Sc - 1) / (Sc + 1)
+
 	CUDA.allowscalar() do
-		## TODO
-		#Ez[1] += exp(-1 * (timestep/sigma)^2)
+		Ez[1] = Ez[1] + abcCoef*(Ez[2] - Ez[1])
+		Ez[x] = Ez[x] + abcCoef*(Ez[x-1] - Ez[x])
 	end
 end
 
@@ -45,7 +48,7 @@ for timestep in 1:1:maxTime
 	@cuda threads = x blocks = 1 updateH(Hy, Ez, x, deltaT, deltaX, mu)
 	CUDA.device_synchronize()
 
-	@cuda threads = x blocks = 1 updateE(Ez, Hy, x, deltaT, deltaX, eps)
+	@cuda threads = x blocks = 1 updateE(Ez, Hy, deltaT, deltaX, eps)
 	CUDA.device_synchronize()
 
 	gaussianSource(Ez, sourcePos, sigma, timestep)

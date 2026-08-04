@@ -106,12 +106,10 @@ $Cr$ is the Courant number.
 	E_z^{q+1}\left[x\right] = E_z^{q}\left[x\right] + \frac{\frac{Cr}{\sqrt{\mu*\epsilon}}-1}{\frac{Cr}{\sqrt{\mu*\epsilon}}+1}*\left(E_z^q\left[x-1\right]-E_z^q\left[x\right]\right)
 \end{equation}
 
-% TODO: Put a single 1D equation here
-
 \section{Julia + CUDA}
 Julia\cite{juliaspec} is a dynamically typed programming language mainly used for scientific computing.
 Moreover, the \texttt{CUDA.jl}\cite{besard2018juliagpu} package allows it to interface with Nvidia GPUs.
-Here is an example, a kernel that sums two arrays value-wise and sets the results in a third array:
+Here is an example of a 1D FDTD implementation.
 \inputminted[bgcolor=codeBg, tabsize=4, breaklines=true, linenos=true]{julia}{\subfix{add.jl}}
 
 \section{Vulkan}
