@@ -16,6 +16,7 @@ struct PushConstants
 void main(uint3 threadId : SV_DispatchThreadID, uniform PushConstants pushConstants)
 {
 	uint idx = threadId.x;
+	const float C = (pushConstants.deltaT/(pushConstants.mu*pushConstants.deltaX));
 
-	Hy[idx] = (idx >= pushConstants.x) ? Hy[idx] : (Hy[idx] + (pushConstants.deltaT/(pushConstants.mu*pushConstants.deltaX))*(Ez[idx+1] - Ez[idx]));
+	Hy[idx] = (idx >= pushConstants.x) ? Hy[idx] : (Hy[idx] + C*(Ez[idx+1] - Ez[idx]));
 }
