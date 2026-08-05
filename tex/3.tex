@@ -37,27 +37,42 @@ For the Vulkan backend, Fdtd Lucuma implements the FDTD method using Vulkan\cite
 	\centering
 	\begin{tikzpicture}[
 			transform shape,
-			node distance=1cm
+			node distance=1cm,
+			stacked/.style={
+				double copy shadow={
+					shadow xshift=1mm,
+					shadow yshift=-1mm,
+				}
+			},
+			vulkan/.style={
+				fill=red!30
+			}
 		]
 
-		\graph[layered layout, components go right top aligned, nodes=draw, edges=rounded corners, sibling distance=1cm]{
-			Frontends -> "Backends*\{f16,f32,f64\}" -> "Basic services";
+		\graph[layered layout, components go right top aligned, nodes={draw, fill=green!30}, edges=rounded corners, sibling distance=2cm, layer distance=2cm]{
+			Frontends[stacked, label=left:\blackcircle{graph:frontends}] ->
+			backends[as={Backends $*$ \{f16,f32,f64\}}, stacked, label=left:\blackcircle{graph:backends}, text width=2.5cm, text centered] ->
+			"Basic services"[stacked, label=left:\blackcircle{graph:services}];
 
-			{[same layer] Frontends, GUI, CLI};
-			{[same layer] "Backends*\{f16,f32,f64\}", "CPU Sequential", "CPU Parallel", "Vulkan"};
+			{[same layer] Frontends, CLI, GUI};
+			{[same layer] backends, "CPU Sequential", "CPU Parallel", Vulkan[vulkan]};
+			{[same layer] "Basic services", "EnTT", "Settings"};
 
 			GUI -> {"CPU Sequential", "CPU Parallel", "Vulkan"};
 			CLI -> {"CPU Sequential", "CPU Parallel", "Vulkan"};
+
+			"CPU Sequential" -> {"EnTT", "Settings"};
+			"CPU Parallel" -> {"EnTT", "Settings"};
+			"Vulkan" -> {"EnTT", "Settings"};
+
+			"EnTT" -> etc[as=Other services$\ldots$, stacked];
+			"Settings" -> etc;
+
+			{[same layer] etc, vulkan2[as=Vulkan services$\ldots$, stacked, vulkan]};
+			{Vulkan, GUI} -> vulkan2;
 		};
 
 	\end{tikzpicture}
-	\caption{Fdtd Lucuma's services graph}
-	\label{fig:fdtd_lucuma_service_graph2}
-\end{figure}
-
-\begin{figure}[H]
-	\centering
-	\includesvg[width=1\textwidth]{images/flow.svg}
 	\caption{Fdtd Lucuma's services graph}
 	\label{fig:fdtd_lucuma_service_graph}
 \end{figure}
@@ -66,6 +81,10 @@ Fdtd Lucuma is structured in services.
 Each one is lazily instantiated the first time one of it's dependants needs to inject it as a dependency.
 The services communicate with each other using signals via EnTT's dispatcher while also sharing data with EnTT's registry.
 The registry is used to store the simulation objects as entities with components, this allows the backends to iterate them in a cache-friendly way.
+
+At the start of the program execution, Fdtd Lucuma instantiates one of it's \blackcircleref{graph:frontends} frontends dependending on the cli arguments used.
+The CLI frontend instantiates a single \blackcircleref{graph:backends} backend, while the GUI frontend instantiates the ones that it needs.
+Then each backend instantiates the \blackcircleref{graph:services} services that it needs.
 
 \section{Entity Component System}
 As mentioned before, Fdtd Lucuma uses EnTT an Entity Component System library.
