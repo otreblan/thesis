@@ -21,6 +21,7 @@
 
 \usepackage{subfiles}
 \usepackage{minted2}
+\usepackage{refcount}
 
 \usepackage{csquotes}
 \usepackage[toc,page]{appendix}
@@ -91,8 +92,12 @@
 	\blackcirclecommon{\theblackcirclestep}%
 }
 
+\newcommand{\blackcirclerefsection}[1]{%
+	\blackcirclecommon{\hypersetup{hidelinks}\ref{#1}}%
+}
+
 \newcommand{\blackcircleref}[1]{%
-	\blackcirclecommon{\hypersetup{hidelinks}\ref{\thesection:#1}}%
+	\blackcirclerefsection{\thesection:#1}%
 }
 
 \directlua{

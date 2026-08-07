@@ -8,7 +8,7 @@
 
 \section{Overview}
 
-Fdtd Lucuma is a simulator made in C++26.
+Fdtd Lucuma is a electromagnetic simulator made in C++26.
 It can be used from the command line and from a GUI made with Dear ImGui\cite{imgui}.
 Internally it is structured using Entity Component System (ECS) with EnTT\cite{entt} and with swappable services using a handwritten dependency injector.
 From which the \texttt{frontend} (CLI or GUI) consumes one of the \texttt{backends}.
@@ -101,7 +101,7 @@ Moreover, each simulation has its own private EnTT registry to avoid sharing whe
 % Data oriented design
 % idk
 
-\section{Flow}
+\section{Flow} \label{sec:flow}
 
 \newpage
 
@@ -150,7 +150,7 @@ Moreover, each simulation has its own private EnTT registry to avoid sharing whe
 
 \section{CLI frontend}
 A simple command line interface that runs a single simulation from the commmand line arguments.
-While also being able to run multiple simulations from a json file.
+While also being able to run multiple simulations from one or more json files when passed as positional arguments.
 
 \begin{figure}[H]
 	\centering
@@ -205,11 +205,19 @@ On the other hand \texttt{Allocator} is a wrapper around Vulkan Memory Allocator
 \texttt{ShaderLoader} is used to create \texttt{VkShaderModule}s from a file path. Which in turn are used to create compute or graphics \texttt{VkPipeline}s.
 
 The \texttt{Compute} service holds the \texttt{VkQueue} and \texttt{VkCommandPool} used to send compute commands to the GPU.
-When the simulation starts or when the any of it's objects change, the backend creates or recreates a single \texttt{CommandBuffer} and multiple \texttt{VkPipeline} and \texttt{VkBuffer}s.
+When the simulation starts or when the any of it's objects change, the backend, by using \texttt{Compute}'s \texttt{createSimpleCommandBuffer()} and \texttt{createPipeline()}, creates or recreates a single \texttt{VkCommandBuffer} and multiple \texttt{VkPipeline} and \texttt{VkBuffer}s.
 The backend at each simulation step resets the \texttt{VkCommandBuffer}.
-For each pipeline of the simulation the backend fills it with \texttt{vkCmdBindPipelines}, \texttt{vkCmdBindDescriptorSets}, \texttt{vkCmdPushConstants} and \texttt{vkCmdDispatch}.
+Then at each substep
+\blackcirclerefsection{\getrefnumber{sec:flow}:step:magnetic},
+\blackcirclerefsection{\getrefnumber{sec:flow}:step:electric},
+\blackcirclerefsection{\getrefnumber{sec:flow}:step:sources} and
+\blackcirclerefsection{\getrefnumber{sec:flow}:step:abc}
+fills it with \texttt{vkCmdBindPipelines}, \texttt{vkCmdBindDescriptorSets}, \texttt{vkCmdPushConstants} commands and
+finally \texttt{vkCmdDispatch} to execute them.
 To ensure proper synchronization between dispatches the backend uses \texttt{vkCmdPipelineBarrier2} between fields.
 Finally the backend submits the commands, waits until the work finishes and continues with the next step.
+
+\inputminted[bgcolor=codeBg, tabsize=4, breaklines=true, linenos=true]{cpp}{\subfix{gauss.cpp}}
 
 % TODO:
 % - It has a lot of boilerplate.
@@ -218,6 +226,5 @@ Finally the backend submits the commands, waits until the work finishes and cont
 % - Vulkan Julia?
 
 %\section{Benchmarks}
-%\inputminted[bgcolor=codeBg, tabsize=4, breaklines=true, linenos=true]{bash}{\subfix{benchmark.sh}}
 
 \end{document}
