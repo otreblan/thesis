@@ -7,6 +7,34 @@
 \chapter{RESULTS}
 \label{sec:results}
 
-% The results are the benchmarks or the implementation per se?
+\section{Benchmarks}
+
+\pgfplotstableread[col sep=comma]{\subfix{benchmarks.csv}}\BENCHMARKS
+
+
+\begin{figure}[H]
+	\centering
+	\begin{tikzpicture}
+		\begin{loglogaxis}
+		[
+			title = Speedup,
+			legend pos = north west,
+			%
+			% Unidades
+			xlabel = Cube length
+			ylabel = Time $(s)$,
+			%
+			width=\linewidth
+		]
+			\foreach \i in {5,9}
+			{
+				\pgfplotstablegetcolumnnamebyindex{\i}\of{\BENCHMARKS}\to{\colname}
+				\addplot table[x index = {0}, y index = {\i}] {\BENCHMARKS};
+				\addlegendentryexpanded{\colname}
+			}
+		\end{loglogaxis}
+	\end{tikzpicture}
+\end{figure}
+
 
 \end{document}
