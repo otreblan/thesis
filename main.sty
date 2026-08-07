@@ -75,6 +75,19 @@
 \tikzstyle{arrow} = [thick,->,>=stealth]
 \tikzstyle{refbadge} = [circle, fill=black, text=white, inner sep=1pt, minimum size=4mm, font=\bfseries\scriptsize]
 
+\pgfplotsset{
+	benchmarkgraph/.style = {
+		width=\linewidth,
+		height=8cm,
+		legend pos=north east,
+		ymajorgrids=true,
+		axis y line=left,
+		axis x line=bottom,
+		axis line style=ultra thick,
+		ymin=0
+	}
+}
+
 \newcounter{blackcirclestep}[section]
 
 \renewcommand{\theblackcirclestep}{%

@@ -1,4 +1,4 @@
-cube_length,size,cuda_gpu,cuda_mem_r,cuda_mem_w,cuda_time,vulkan_gpu,vulkan_mem_r,vulkan_mem_w,vulkan_time,speedup
+cube_length,size,cuda_gpu,cuda_mem_r,cuda_mem_w,Julia CUDA,vulkan_gpu,vulkan_mem_r,vulkan_mem_w,Vulkan,speedup
 16,4096,1.00,0.90,0.20,31.612,0.70,0.20,0.00,1.663,19.01
 32,32768,3.80,0.90,0.20,29.365,1.20,0.20,0.00,1.394,21.07
 48,110592,8.60,1.00,1.00,29.174,2.80,0.30,0.30,1.398,20.87

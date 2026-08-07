@@ -11,29 +11,53 @@
 
 \pgfplotstableread[col sep=comma]{\subfix{benchmarks.csv}}\BENCHMARKS
 
+% How do I cite the Julia simulator?
+
+The benchmark consists on running multiple 3D simulations on the Julia CUDA simulator and FDTD Lucuma with the Vulkan backend where the only variation is the size of the simulation matrix.
+The tests were executed on UTEC's HPC cluster Khipu on the \texttt{ag001} node, which has a NVIDIA A100 40 GB GDDR6, and by using Nsight Compute as the profiler.
 
 \begin{figure}[H]
 	\centering
 	\begin{tikzpicture}
-		\begin{loglogaxis}
+		\begin{axis}
 		[
-			title = Speedup,
-			legend pos = north west,
+			benchmarkgraph,
+			title = Simulation time,
 			%
 			% Unidades
-			xlabel = Cube length
-			ylabel = Time $(s)$,
-			%
-			width=\linewidth
+			xlabel = Cube length,
+			ylabel = Time $(s)$
 		]
 			\foreach \i in {5,9}
 			{
 				\pgfplotstablegetcolumnnamebyindex{\i}\of{\BENCHMARKS}\to{\colname}
 				\addplot table[x index = {0}, y index = {\i}] {\BENCHMARKS};
-				\addlegendentryexpanded{\colname}
+				\addlegendentryexpanded{\detokenize\expandafter{\colname}}
 			}
-		\end{loglogaxis}
+		\end{axis}
 	\end{tikzpicture}
+	\caption{Julia CUDA vs FDTD Lucuma (Vulkan backend) simulation time comparison}
+	\label{fig:julia_cuda_vs_vulkan}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\begin{tikzpicture}
+		\begin{axis}
+		[
+			benchmarkgraph,
+			title = Speedup $\left(\frac{\text{Vulkan}}{\text{Julia CUDA}}\right)$,
+			%
+			% Unidades
+			xlabel = Cube length,
+			ylabel = Speedup
+		]
+			\addplot table[x index = {0}, y index = {10}] {\BENCHMARKS};
+			\addlegendentryexpanded{Speedup}
+		\end{axis}
+	\end{tikzpicture}
+	\caption{Julia CUDA vs FDTD Lucuma (Vulkan backend) speedup}
+	\label{fig:julia_cuda_vs_vulkan_speedup}
 \end{figure}
 
 
