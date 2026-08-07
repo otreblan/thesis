@@ -6,15 +6,13 @@
 \newpage
 \chapter{BACKGROUND}
 
-\section{FDTD}
+This chapter mainly addresses the equations used by the one-dimensional finite-difference time-domain (FDTD) method, it's flow and the definitions of two differente technologies used to execute code in GPU's: Julia CUDA and Vulkan. Each one with a short description and a 1D FDTD implementation done with it.
 
-\subsection{Yee's algorithm}
+\section{Yee's algorithm}
 
-The finite-difference time-domain (FDTD) method\cite{ufdtd} is used to aproximate electromagnetic fields over time.
+The finite-difference time-domain (FDTD) method\cite{ufdtd}, also known as Yee's algorithm, is used to aproximate electromagnetic fields over time.
 It consists on a pair of ``update equations'' for the \blackcircleref{step:magnetic} magenetic fields and \blackcircleref{step:electric} electric fields based on discrete versions of Ampère's law and Faraday's law that are called $t$ times.
 Each equation takes the previous iteration's fields and some constants from the material properties as inputs and sets the current iteration's magnetic or electric fields.
-
-On top of that,
 
 %The core of Fdtd Lucuma's simulation loop at each time step consists of the previously mentioned two equations, one or more additive electric sources and the boundary conditions of each field and component.
 %Fdtd Lucuma currently only has the gaussian source as is sole source implementation and the Absorbing boundary condition as the boundary implementation.
@@ -54,7 +52,7 @@ On top of that,
 
 For the sake of conciseness only the one-dimensional equations will be shown. The full 3D equations are in Appendix \ref{section:fdtd_3d}.
 
-\subsubsection{Discrete notation}
+\subsection{Discrete notation}
 
 \citet{ufdtd} used the following notation to represent the discretized versions of the electric $E$ and magnetic $H$ fields respectively.
 
@@ -68,7 +66,7 @@ For the sake of conciseness only the one-dimensional equations will be shown. Th
 Where $m,q$ are the spatial and temporal step indices, and $\Delta_x,\Delta_t$ are their respective offsets.
 When using 3 spatial dimensions $m,n,p$ are the $x,y,z$ indices.
 
-\subsubsection{Magnetic field update}
+\subsection{Magnetic field update}
 
 $\mu$ is the permeability of the material.
 
@@ -77,7 +75,7 @@ $\mu$ is the permeability of the material.
 	H_y^{q+\frac{1}{2}} \left[m+\frac{1}{2}\right] = H_y^{q-\frac{1}{2}} \left[m+\frac{1}{2}\right] +\frac{\Delta_t}{\mu\Delta_x} \left(E_z^q\left[m+1\right]-E_z^q\left[m\right]\right)
 \end{equation}
 
-\subsubsection{Electric field update}
+\subsection{Electric field update}
 
 $\epsilon$ is the permittivity of the material.
 
@@ -86,7 +84,7 @@ $\epsilon$ is the permittivity of the material.
 	E_z^{q+1}\left[m\right] = E_z^{q}\left[m\right] + \frac{\Delta_t}{\epsilon\Delta_x}\left(H_y^{q+\frac{1}{2}}\left[m+\frac{1}{2}\right]-H_y^{q+\frac{1}{2}}\left[m-\frac{1}{2}\right]\right)
 \end{equation}
 
-\subsubsection{Gaussian source}
+\subsection{Gaussian source}
 
 This source depends on the $q$ temporal step which is scaled by $\sigma$.
 \begin{equation}
@@ -94,7 +92,7 @@ This source depends on the $q$ temporal step which is scaled by $\sigma$.
 	E_z^{q+1}\left[m\right] = E_z^{q}\left[m\right] + \exp\left(-\left(\frac{q}{\sigma}\right)^2\right)
 \end{equation}
 
-\subsubsection{Absorbing boundary conditions}
+\subsection{Absorbing boundary conditions}
 $Cr$ is the Courant number.
 
 \begin{equation}
