@@ -6,12 +6,12 @@
 \newpage
 \chapter{BACKGROUND}
 
-This chapter mainly addresses the equations used by the one-dimensional finite-difference time-domain (FDTD) method, it's flow and the definitions of two differente technologies used to execute code in GPU's: Julia CUDA and Vulkan. Each one with a short description and a 1D FDTD implementation done with it.
+This chapter mainly addresses the equations used by the one-dimensional finite-difference time-domain (FDTD) method, its flow and the definitions of two different technologies used to execute code in GPUs: Julia CUDA and Vulkan. Each one with a short description and a 1D FDTD implementation done with it.
 
 \section{Yee's algorithm}
 
 The finite-difference time-domain (FDTD) method\cite{ufdtd}, also known as Yee's algorithm, is used to aproximate electromagnetic fields over time.
-It consists on a pair of ``update equations'' for the \blackcircleref{step:magnetic} magenetic fields and \blackcircleref{step:electric} electric fields based on discrete versions of Ampère's law and Faraday's law that are called $t$ times.
+It consists on a pair of ``update equations'' for the \blackcircleref{step:magnetic} magenetic fields and \blackcircleref{step:electric} electric fields based on discrete versions of Ampère's law and Faraday's law that are stepped $t$ times.
 Each equation takes the previous iteration's fields and some constants from the material properties as inputs and sets the current iteration's magnetic or electric fields.
 
 %The core of Fdtd Lucuma's simulation loop at each time step consists of the previously mentioned two equations, one or more additive electric sources and the boundary conditions of each field and component.
