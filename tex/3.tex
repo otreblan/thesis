@@ -87,6 +87,13 @@ At the start of the program execution, Fdtd Lucuma instantiates one of it's \bla
 The CLI frontend instantiates a single \blackcircleref{graph:backends} backend, while the GUI frontend instantiates the ones that it needs.
 Then each backend instantiates the \blackcircleref{graph:services} services that it needs.
 
+\section{Dependency injector}
+
+Each service accepts a reference to the \texttt{Injector} on it's constructor.
+The \texttt{inject<T>} function instantiates the service passed as template argument if it hasn't been instantiated before, on the other case it only returns a reference to it.
+
+\inputminted[bgcolor=codeBg, tabsize=4, breaklines=true, linenos=true, escapeinside=||]{cpp}{\subfix{service.cpp}}
+
 \section{Entity Component System}
 %As mentioned before, Fdtd Lucuma uses EnTT an Entity Component System library.
 EnTT\cite{entt} is the open source C++ header-only library Fdtd Lucuma uses to implement the Entity Component System paradigm.
