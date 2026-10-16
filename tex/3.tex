@@ -91,6 +91,7 @@ Then each backend instantiates the \blackcircleref{graph:services} services that
 
 Each service accepts a reference to the \texttt{Injector} on it's constructor.
 The \texttt{inject<T>} function instantiates the service passed as template argument if it hasn't been instantiated before, on the other case it only returns a reference to it.
+The injector destructor destroys the instantiated services in reverse order of creation, this is required by some Vulkan object.
 
 \inputminted[bgcolor=codeBg, tabsize=4, breaklines=true, linenos=true, escapeinside=||]{cpp}{\subfix{service.cpp}}
 
