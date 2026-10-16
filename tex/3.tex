@@ -287,7 +287,12 @@ finally \texttt{vkCmdDispatch} to execute them.
 To ensure proper synchronization between dispatches the backend uses \texttt{vkCmdPipelineBarrier2} between fields.
 Finally the backend submits the commands, waits until the work finishes and continues with the next step.
 
+\subsection{Dispatch example}
+
 \inputminted[bgcolor=codeBg, tabsize=4, breaklines=true, linenos=true, escapeinside=||]{cpp}{\subfix{gauss.cpp}}
+
+
+The function in line \ref{code:dispatch} fills the \texttt{VkCommandBuffer} with the commands needed to apply the gaussian sources.
 
 % TODO:
 % - It has a lot of boilerplate.
