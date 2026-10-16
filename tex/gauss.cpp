@@ -30,7 +30,7 @@ void fillData(entt::registry& registry, vulkan::Buffer& Ec) |\phantomsection\lab
 
 	auto group = registry.group<const components::GaussianSource<T>>(entt::get<const components::Transform>);
 
-	for(auto&& [_, source, transform]: group.each())
+	for(auto&& [_, source, transform]: group.each()) |\phantomsection\label{code:iterate}|
 	{
 		sourceSsbos.emplace_back(SourceSsbo{
 			.position = transform.position,
@@ -40,7 +40,7 @@ void fillData(entt::registry& registry, vulkan::Buffer& Ec) |\phantomsection\lab
 
 	const std::size_t byteSize = sourceSsbos.size()*sizeof(SourceSsbo);
 
-	if(byteSize > sourceSsbosBuffer.getInfo().size)
+	if(byteSize > sourceSsbosBuffer.getInfo().size)  |\phantomsection\label{code:recreate}|
 	{
 		sourceSsbosBuffer = allocateSsbosBuffer(std::bit_ceil(byteSize));
 		pipeline          = recreatePipeline(Ec);
