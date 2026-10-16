@@ -24,6 +24,49 @@ vulkan::ComputePipeline pipeline;
 .
 .
 
+vulkan::ComputePipeline recreatePipeline(vulkan::Buffer& Ec) |\phantomsection\label{code:recreatePipeline}|
+{
+	if(sourceSsbos.empty())
+		return {};
+
+	return createInfo.compute.createPipeline({
+		.shaderPath = createInfo.shaderPath,
+		.setLayouts = std::array{
+			vulkan::ComputePipelineCreateInfo::setLayout {
+				.bindings = simpleStorageBuffersLayout<2>(),
+				.buffers = std::array<std::reference_wrapper<const vulkan::Buffer>, 2>{
+					Ec,
+					sourceSsbosBuffer,
+				}
+			}
+		},
+		.pushConstants = vulkan::Compute::makePushConstantsLayout<typeof(pushConstants)>(),
+		.specializationConstants = SpecializationConstants::make(
+			0, (std::uint32_t)getWorkgroupSize(),
+			1, (std::uint32_t)1,
+			2, (std::uint32_t)1,
+			3, (std::uint32_t)sourceSsbos.size()
+		)
+	});
+}
+
+vulkan::Buffer allocateSsbosBuffer(std::size_t bytes)  |\phantomsection\label{code:allocateSsbosBuffer}|
+{
+	if(bytes == 0)
+		return {};
+
+	vma::AllocationCreateFlags vmaFlags =
+		vma::AllocationCreateFlagBits::eMapped |
+		vma::AllocationCreateFlagBits::eHostAccessSequentialWrite;
+
+	return createInfo.allocator.allocate(
+		bytes,
+		vk::BufferUsageFlagBits::eStorageBuffer,
+		vmaFlags,
+		vk::MemoryPropertyFlagBits::eDeviceLocal
+	);
+}
+
 void fillData(entt::registry& registry, vulkan::Buffer& Ec) |\phantomsection\label{code:fillData}|
 {
 	sourceSsbos.clear();
