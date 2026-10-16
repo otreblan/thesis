@@ -287,7 +287,7 @@ finally \texttt{vkCmdDispatch} to execute them.
 To ensure proper synchronization between dispatches the backend uses \texttt{vkCmdPipelineBarrier2} between fields.
 Finally the backend submits the commands, waits until the work finishes and continues with the next step.
 
-\inputminted[bgcolor=codeBg, tabsize=4, breaklines=true, linenos=true]{cpp}{\subfix{gauss.cpp}}
+\inputminted[bgcolor=codeBg, tabsize=4, breaklines=true, linenos=true, escapeinside=||]{cpp}{\subfix{gauss.cpp}}
 
 % TODO:
 % - It has a lot of boilerplate.
