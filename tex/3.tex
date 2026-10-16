@@ -199,15 +199,35 @@ This allows for each component of the field updates to be parallelized as they d
 	\centering
 	\begin{tikzpicture}[
 			transform shape,
-			node distance=1cm
+			node distance=2cm
 		]
 
-		\node[circle, draw] (Hx) {Hx};
-		\node[circle, below of=Hx] (Hy) {Hy};
-		\node[circle, below of=Hy] (Hz) {Hz};
+		\node[circle, draw] (Hx) {$H_x$};
+		\node[circle, draw, below of=Hx] (Hy) {$H_y$};
+		\node[circle, draw, below of=Hy] (Hz) {$H_z$};
+        
+		\node[circle, draw, right of=Hy] (H) {$H$};
 
+		\node[circle, draw, right of=H] (Ey) {$E_y$};
+		\node[circle, draw, above of=Ey] (Ex) {$E_x$};
+		\node[circle, draw, below of=Ey] (Ez) {$E_z$};
+        
+		\node[circle, draw, right of=Ey] (E) {$E$};
+        
+		\node[circle, draw, right of=E] (E) {$E$};
 
-		%\draw[arrow] (start) -- (select);
+		\draw[arrow] (Hx) -- (H);
+		\draw[arrow] (Hy) -- (H);
+		\draw[arrow] (Hz) -- (H);
+        
+		\draw[arrow] (H) -- (Ex);
+		\draw[arrow] (H) -- (Ey);
+		\draw[arrow] (H) -- (Ez);
+        
+		\draw[arrow] (Ex) -- (E);
+		\draw[arrow] (Ey) -- (E);
+		\draw[arrow] (Ez) -- (E);
+        
 
 	\end{tikzpicture}
 	\caption{Tasks and dependencies}
