@@ -291,11 +291,10 @@ Finally the backend submits the commands, waits until the work finishes and cont
 
 \inputminted[bgcolor=codeBg, tabsize=4, breaklines=true, linenos=true, escapeinside=||]{cpp}{\subfix{gauss.cpp}}
 
-
 The function in line \ref{code:dispatch} fills the \texttt{VkCommandBuffer} with the commands needed to apply the gaussian sources to a component \texttt{Ec} of the electric field.
-First it sets the push constants.
-Then in line \ref{code:iterate} it iterates all entities that have the \texttt{Transform} and \texttt{GaussianSource} components to fill the \texttt{sourceSsbos} vector with only the needed data.
+First in line \ref{code:iterate} it iterates all entities that have the \texttt{Transform} and \texttt{GaussianSource} components to fill the \texttt{sourceSsbos} vector with only the needed data.
 In case that the vector size exceeds the size of the Vulkan Buffer a new Buffer is allocated and the whole pipeline is recreated in line \ref{code:recreatePipeline}.
+Then it binds the compute pipeline, pushes the push constants and to finally dispatch the work per se.
 
 % TODO:
 % - It has a lot of boilerplate.
