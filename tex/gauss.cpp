@@ -1,4 +1,4 @@
-void fillData(entt::registry& registry, vulkan::Buffer& Ec) |\phantomsection\label{code:fillData}
+void fillData(entt::registry& registry, vulkan::Buffer& Ec) |\phantomsection\label{code:fillData}|
 {
 	sourceSsbos.clear();
 
