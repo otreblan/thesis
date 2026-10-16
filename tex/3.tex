@@ -10,7 +10,7 @@
 
 Fdtd Lucuma is a electromagnetic simulator made in C++26.
 It can be used from the command line and from a GUI made with Dear ImGui\cite{imgui}.
-Internally it is structured using Entity Component System (ECS) with EnTT\cite{entt} and with swappable services using a handwritten dependency injector.
+Internally it is structured using Entity Component System (ECS) and with swappable services using a handwritten dependency injector.
 From which the \texttt{frontend} (CLI or GUI) consumes one of the \texttt{backends}.
 Currently it has 8 backends, one per each pair of archetype and supported precision:
 
@@ -81,26 +81,39 @@ Apart from that there is a FDTD implementation in Julia CUDA\cite{besard2018juli
 \end{figure}
 
 As shown in Figure \ref{fig:fdtd_lucuma_service_graph} Fdtd Lucuma is structured in services.
-Each one is lazily instantiated the first time one of it's dependants needs to inject it as a dependency.
-The services communicate with each other using signals via EnTT's dispatcher while also sharing data with EnTT's registry.
-The registry is used to store the simulation objects as entities with components, this allows the backends to iterate them in a cache-friendly way.
+Each one is lazily instantiated the first time one of it's dependents needs to inject it as a dependency.
 
 At the start of the program execution, Fdtd Lucuma instantiates one of it's \blackcircleref{graph:frontends} frontends dependending on the cli arguments used.
 The CLI frontend instantiates a single \blackcircleref{graph:backends} backend, while the GUI frontend instantiates the ones that it needs.
 Then each backend instantiates the \blackcircleref{graph:services} services that it needs.
 
 \section{Entity Component System}
-As mentioned before, Fdtd Lucuma uses EnTT an Entity Component System library.
-Mainly for to store the simulation metadata and objects as \emph{components} related to \emph{entities} inside a EnTT registry.
-This approach allows for each service (\emph{system}) to iterate over the data with a better memory locality.
+%As mentioned before, Fdtd Lucuma uses EnTT an Entity Component System library.
+EnTT\cite{entt} is the open source C++ header-only library Fdtd Lucuma uses to implement the Entity Component System paradigm.
+It provides the \texttt{registry}, an object that has methods to create, update and delete entities and components.
+Each entity is used to identify a tuple of components stored inside the registry.
+Each component is a struct instance that holds data and its related to an entity.
+
+\begin{table}[H]
+	\centering
+	\begin{tabular}{l|l|l}
+		Entity & Position & GaussianSource \\
+		\hline
+		0 & x: 1, y:1, z:1 & sigma: 1 \\
+		1 & x: 2, y:2, z:2 & sigma: 1 \\
+		2 & x: 10, y:10, z:10 & sigma: 2 \\
+	\end{tabular}
+	\caption{Three Gaussian sources in ECS}
+	\label{tab:ecs_example}
+\end{table}
+\footnotetext{As of 2026, the Spirv \texttt{exp()} instruction only supports 16-bits and 32-bits\cite{spirv_spec}.}
+
+This approach allows for each service (\emph{system}) to iterate and filter over one or more components.
 Moreover, each simulation has its own private EnTT registry to avoid data sharing between multiple simulations that run in parallel.
 
-\subsection{Entities}
-%TODO
-\subsection{Components}
-%TODO
-\subsection{Systems}
-%TODO
+EnTT also provides the \texttt{dispatcher}, which is used by Fdtd Lucuma's services to communicate with each other using signals while also sharing data with EnTT's registry.
+The registry is used to store the simulation objects as entities with components as show in Table \ref{tab:ecs_example}, this allows the backends to iterate them in a cache-friendly way because the components are stored in continuous arrays in memory and only the components needed for the logic are fetched instead of wasting L1 cache lines on useless data.
+
 
 % EnTT
 % Cache friendly
@@ -168,6 +181,9 @@ While also being able to run multiple simulations from one or more json files wh
 	\label{fig:fdtd_lucuma_cli}
 \end{figure}
 
+\subsection{CLI examples}
+
+\inputminted[bgcolor=codeBg, tabsize=4, breaklines=true, linenos=true]{bash}{\subfix{cli-examples.sh}}
 
 \section{GUI frontend}
 An interactive interface made with Dear ImGui using it's Vulkan and SDL3 implementations.
@@ -186,7 +202,7 @@ While also having a heatmap visualizer for each component of the electric and ma
 \section{CPU backends}
 \subsection{Sequential}
 The Sequential backend is the simplest of the three.
-At each step it updates each $\{x,y,z\}$ component of the magnetic field, then the components of the electric field, then it applies each source that exists in the EnTT registry and finally the boundary conditions of each top and botom of each component.
+At each step, as shown in Figure \ref{fig:fdtd_lucuma_flow}, it updates each $\{x,y,z\}$ component of the magnetic field \blackcirclerefsection{\getrefnumber{sec:flow}:step:magnetic}, then the components of the electric field \blackcirclerefsection{\getrefnumber{sec:flow}:step:electric}, then it applies each source that exists in the EnTT registry \blackcirclerefsection{\getrefnumber{sec:flow}:step:sources} and finally the boundary conditions of each top and bottom of each component \blackcirclerefsection{\getrefnumber{sec:flow}:step:abc}.
 
 \subsection{Parallel}
 The parallel backend reuses most of the code from the sequential backend.
@@ -234,7 +250,7 @@ This allows for each component of the field updates to be parallelized as they d
         
 
 	\end{tikzpicture}
-	\caption{Tasks and dependencies}
+	\caption{Tasks and dependencies of a time step}
 	\label{fig:taskflow_graph}
 \end{figure}
 
