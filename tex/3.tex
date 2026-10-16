@@ -106,13 +106,14 @@ Each component is a struct instance that holds data and its related to an entity
 	\caption{Three Gaussian sources in ECS}
 	\label{tab:ecs_example}
 \end{table}
-\footnotetext{As of 2026, the Spirv \texttt{exp()} instruction only supports 16-bits and 32-bits\cite{spirv_spec}.}
 
 This approach allows for each service (\emph{system}) to iterate and filter over one or more components.
+While also being able to filter entities that have at least one certain component, like for example having a \texttt{NotPaused} empty component to only iterate the entities that are not paused.
 Moreover, each simulation has its own private EnTT registry to avoid data sharing between multiple simulations that run in parallel.
 
-EnTT also provides the \texttt{dispatcher}, which is used by Fdtd Lucuma's services to communicate with each other using signals while also sharing data with EnTT's registry.
-The registry is used to store the simulation objects as entities with components as show in Table \ref{tab:ecs_example}, this allows the backends to iterate them in a cache-friendly way because the components are stored in continuous arrays in memory and only the components needed for the logic are fetched instead of wasting L1 cache lines on useless data.
+EnTT also provides the \texttt{dispatcher}, which is used by Fdtd Lucuma's services to communicate with each other using signals by sending or consuming events.
+For example, the GUI frontend sends the \texttt{Update} event 60 times per second (or your monitor refresh rate), and any system can consume it by connecting a member function to the dispatcher.
+The registry is used to store the simulation objects as entities with components as show in Table \ref{tab:ecs_example}, this allows the systems to iterate them in a cache-friendly way because the components are stored in continuous arrays in memory and only the components needed for the logic are fetched instead of wasting L1 cache lines on useless data\cite{10.1145/3748522.3779910}.
 
 
 % EnTT
@@ -122,6 +123,8 @@ The registry is used to store the simulation objects as entities with components
 % idk
 
 \section{Flow} \label{sec:flow}
+
+\texttt{time} is the current time step, \texttt{max\_time} is the maximum time steps, $H_{\{x,y,z\}}$ are the three buffers of the magnetic field, $E_{\{x,y,z\}}$ are the three buffers of the electric field.
 
 \newpage
 
@@ -134,7 +137,7 @@ The registry is used to store the simulation objects as entities with components
 
 		\node[startstop] (start) {Start};
 
-		\node[io, below=of start] (select) {Configure simulation parameters};
+		\node[io, below=of start] (select) {Read simulation parameters};
 
 		\node[process, below=of select] (services) {\blackcircle{step:services} Start basic services and selected backend. (As shown in Figure \ref{fig:fdtd_lucuma_service_graph})};
 		\node[process, below=of services] (entity) {\blackcircle{step:entity} Create a new ECS entity};
@@ -171,7 +174,7 @@ The registry is used to store the simulation objects as entities with components
 \footnotetext{Parameters and buffers}
 
 \section{CLI frontend}
-A simple command line interface that runs a single simulation from the commmand line arguments.
+A simple command line interface that runs a single headless simulation with parameters passed from the commmand line arguments.
 While also being able to run multiple simulations from one or more json files when passed as positional arguments.
 
 \begin{figure}[H]
@@ -294,7 +297,7 @@ Finally the backend submits the commands, waits until the work finishes and cont
 The function in line \ref{code:dispatch} fills the \texttt{VkCommandBuffer} with the commands needed to apply the gaussian sources to a component \texttt{Ec} of the electric field.
 First in line \ref{code:iterate} it iterates all entities that have the \texttt{Transform} and \texttt{GaussianSource} components to fill the \texttt{sourceSsbos} vector with only the needed data.
 In case that the vector size exceeds the size of the Vulkan Buffer a new Buffer is allocated and the whole pipeline is recreated in line \ref{code:recreatePipeline}.
-Then it binds the compute pipeline, pushes the push constants and to finally dispatch the work per se.
+Then it binds the compute pipeline, pushes the push constants and to finally dispatch the work per se and continues to the next substep.
 
 % TODO:
 % - It has a lot of boilerplate.

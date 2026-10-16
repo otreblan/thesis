@@ -153,3 +153,21 @@
 	institution = "The Khronos Group Inc.",
 	url = "https://registry.khronos.org/SPIR-V/specs/unified1/GLSL.std.450.html"
 }
+
+@inproceedings{10.1145/3748522.3779910,
+author = {Tasnim, Anisha and Zhao, Tian},
+title = {The Essence of Entity Component System},
+year = {2026},
+isbn = {9798400722943},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/3748522.3779910},
+doi = {10.1145/3748522.3779910},
+abstract = {Modern game engines increasingly adopt the Entity Component System (ECS) paradigm as a data-oriented alternative to traditional object-oriented architecture. While ECS promotes modularity and performance through the separation of data and behavior, its practical efficiency depends heavily on the underlying data layout. Despite widespread adoption in frameworks, such as Unity DOTS, Bevy, and Flecs, the semantics of the archetype ECS remain informal and implementation-dependent, limiting rigorous reasoning about determinism, system scheduling, and structural mutations.This work formalizes and experimentally evaluates the archetype ECS. The formal model captures entity creation, component composition, system execution, and archetype migration as compositional state transitions, establishing the core invariants of archetype organization. Using a Tower Defense simulation, we compare the archetype ECS with alternative designs under identical conditions. Results show that the archetype ECS achieves higher frame rate and better frame stability than alternative designs, due to improved cache efficiency and consistent entity access. By uniting formal semantics with empirical validation, this study shows that the archetype ECS outperforms traditional architectures and provides a solid foundation for reasoning about correctness and parallelism.},
+booktitle = {Proceedings of the 41st ACM/SIGAPP Symposium on Applied Computing},
+pages = {1320–1329},
+numpages = {10},
+keywords = {entity component system, semantics, type system, simulation, computer game},
+location = {Thessaloniki, Greece},
+series = {SAC '26}
+}
