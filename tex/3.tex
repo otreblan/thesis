@@ -214,7 +214,8 @@ This allows for each component of the field updates to be parallelized as they d
         
 		\node[circle, draw, right of=Ey] (E) {$E$};
         
-		\node[circle, draw, right of=E] (E) {$E$};
+		\node[circle, draw, right of=E] (Sources) {$Sources$};
+		\node[circle, draw, right of=Sources] (ABC) {$ABC$};
 
 		\draw[arrow] (Hx) -- (H);
 		\draw[arrow] (Hy) -- (H);
@@ -227,6 +228,9 @@ This allows for each component of the field updates to be parallelized as they d
 		\draw[arrow] (Ex) -- (E);
 		\draw[arrow] (Ey) -- (E);
 		\draw[arrow] (Ez) -- (E);
+
+		\draw[arrow] (E) -- (Sources);
+		\draw[arrow] (Sources) -- (ABC);
         
 
 	\end{tikzpicture}
