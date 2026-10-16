@@ -12,7 +12,7 @@ Fdtd Lucuma is a electromagnetic simulator made in C++26.
 It can be used from the command line and from a GUI made with Dear ImGui\cite{imgui}.
 Internally it is structured using Entity Component System (ECS) with EnTT\cite{entt} and with swappable services using a handwritten dependency injector.
 From which the \texttt{frontend} (CLI or GUI) consumes one of the \texttt{backends}.
-Currently it has 9 backends:
+Currently it has 8 backends, one per each pair of archetype and supported precision:
 
 \begin{table}[H]
 	\centering
@@ -21,18 +21,18 @@ Currently it has 9 backends:
 		\hline
 		CPU sequential & \checkmark & \checkmark & \checkmark \\
 		CPU parallel   & \checkmark & \checkmark & \checkmark \\
-		Vulkan         & \checkmark & \checkmark & \triangle\footnotemark \\
+		Vulkan         & \checkmark & \checkmark & \times\footnotemark \\
 	\end{tabular}
-	\caption{Fdtd Lucuma's backends}
+	\caption{Fdtd Lucuma's backend support matrix}
 	\label{tab:nine_backends}
 \end{table}
-\footnotetext{As of 2026, float64's \texttt{exp()} is not implemented in Mesa's AMD drivers}
+\footnotetext{As of 2026, the Spirv \texttt{exp()} instruction only supports 16-bits and 32-bits\cite{spirv_spec}.}
 
 The sequential backends uses plain C++, while the parallel ones uses Taskflow\cite{Huang_2022}.
 For the Vulkan backends, Fdtd Lucuma implements the FDTD method using Vulkan\cite{vulkanspec} Compute Pipelines made from, as shown in Figure \ref{fig:vulkan_compute_pipeline}, shaders written in Shader Slang\cite{10.1145/3197517.3201380}.
 
 % How do I cite this?
-Appart from that there is a FDTD implementation in Julia CUDA\cite{besard2018juliagpu} that will only be used as part of Chapter \ref{sec:results} results comparision.
+Apart from that there is a FDTD implementation in Julia CUDA\cite{besard2018juliagpu} that will only be used as part of Chapter \ref{sec:results} results comparison.
 
 \section{Structure}
 
@@ -93,7 +93,14 @@ Then each backend instantiates the \blackcircleref{graph:services} services that
 As mentioned before, Fdtd Lucuma uses EnTT an Entity Component System library.
 Mainly for to store the simulation metadata and objects as \emph{components} related to \emph{entities} inside a EnTT registry.
 This approach allows for each service (\emph{system}) to iterate over the data with a better memory locality.
-Moreover, each simulation has its own private EnTT registry to avoid sharing when running multiple simulations in parallel.
+Moreover, each simulation has its own private EnTT registry to avoid data sharing between multiple simulations that run in parallel.
+
+\subsection{Entities}
+%TODO
+\subsection{Components}
+%TODO
+\subsection{Systems}
+%TODO
 
 % EnTT
 % Cache friendly
@@ -118,8 +125,8 @@ Moreover, each simulation has its own private EnTT registry to avoid sharing whe
 
 		\node[process, below=of select] (services) {\blackcircle{step:services} Start basic services and selected backend. (As shown in Figure \ref{fig:fdtd_lucuma_service_graph})};
 		\node[process, below=of services] (entity) {\blackcircle{step:entity} Create a new ECS entity};
-		\node[process, below=of entity] (simulation) {\blackcircle{step:state} Attach the simulation state and a private registry with the sources to \blackcircleref{step:entity}};
-		\node[decision, below=of simulation, yshift=0.25cm] (while) {Can step?};
+		\node[process, below=of entity] (simulation) {\blackcircle{step:state} Attach the simulation state\footnotemark and a private registry with the sources to \blackcircleref{step:entity}};
+		\node[decision, below=of simulation, yshift=0.25cm] (while) {time++ < max\_time};
 
 
 		\node[process, below=of while] (updateH) {\blackcircle{step:magnetic} Update magnetic $H_{\{x,y,z\}}$ fields};
@@ -148,6 +155,8 @@ Moreover, each simulation has its own private EnTT registry to avoid sharing whe
 	\label{fig:fdtd_lucuma_flow}
 \end{figure}
 
+\footnotetext{Parameters and buffers}
+
 \section{CLI frontend}
 A simple command line interface that runs a single simulation from the commmand line arguments.
 While also being able to run multiple simulations from one or more json files when passed as positional arguments.
@@ -155,7 +164,7 @@ While also being able to run multiple simulations from one or more json files wh
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=1\textwidth]{images/cli.png}
-	\caption{Fdtd Lucuma's CLI}
+	\caption{Fdtd Lucuma's CLI's arguments}
 	\label{fig:fdtd_lucuma_cli}
 \end{figure}
 
@@ -175,14 +184,35 @@ While also having a heatmap visualizer for each component of the electric and ma
 
 
 \section{CPU backends}
+\subsection{Sequential}
 The Sequential backend is the simplest of the three.
 At each step it updates each $\{x,y,z\}$ component of the magnetic field, then the components of the electric field, then it applies each source that exists in the EnTT registry and finally the boundary conditions of each top and botom of each component.
 
+\subsection{Parallel}
 The parallel backend reuses most of the code from the sequential backend.
 But it uses Taskflow to create a coarse task graph.
 By wrapping each field component, source and boundary update in a task.
-Then it creates a directed graph from the task's dependencies.
+Then it creates a directed graph from all the tasks and their dependencies.
 This allows for each component of the field updates to be parallelized as they do not have dependencies on each other.
+
+\begin{figure}[H]
+	\centering
+	\begin{tikzpicture}[
+			transform shape,
+			node distance=1cm
+		]
+
+		\node[circle, draw] (Hx) {Hx};
+		\node[circle, below of=Hx] (Hy) {Hy};
+		\node[circle, below of=Hy] (Hz) {Hz};
+
+
+		%\draw[arrow] (start) -- (select);
+
+	\end{tikzpicture}
+	\caption{Tasks and dependencies}
+	\label{fig:taskflow_graph}
+\end{figure}
 
 
 \section{Vulkan backend}
