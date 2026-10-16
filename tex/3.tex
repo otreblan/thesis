@@ -295,7 +295,7 @@ Finally the backend submits the commands, waits until the work finishes and cont
 The function in line \ref{code:dispatch} fills the \texttt{VkCommandBuffer} with the commands needed to apply the gaussian sources to a component \texttt{Ec} of the electric field.
 First it sets the push constants.
 Then in line \ref{code:iterate} it iterates all entities that have the \texttt{Transform} and \texttt{GaussianSource} components to fill the \texttt{sourceSsbos} vector with only the needed data.
-Which in turn is sent to the 
+In case that the vector size exceeds the size of the Vulkan Buffer a new Buffer is allocated and the whole pipeline is recreated in line \ref{code:recreatePipeline}.
 
 % TODO:
 % - It has a lot of boilerplate.
