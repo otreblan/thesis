@@ -1,3 +1,29 @@
+.
+.
+.
+
+struct alignas(32)
+{
+	alignas(sizeof(svec4)) svec3 paddedDims;
+	T time = {};
+	T x0 = {};
+} pushConstants;
+
+struct SourceSsbo
+{
+	alignas(sizeof(svec4)) svec3 position = {};
+	T sigma;
+};
+
+std::vector<SourceSsbo> sourceSsbos;
+vulkan::Buffer          sourceSsbosBuffer;
+
+vulkan::ComputePipeline pipeline;
+
+.
+.
+.
+
 void fillData(entt::registry& registry, vulkan::Buffer& Ec) |\phantomsection\label{code:fillData}|
 {
 	sourceSsbos.clear();
