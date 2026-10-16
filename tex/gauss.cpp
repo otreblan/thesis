@@ -1,4 +1,4 @@
-void fillData(entt::registry& registry, vulkan::Buffer& Ec)
+void fillData(entt::registry& registry, vulkan::Buffer& Ec) |\phantomsection\label{code:fillData}
 {
 	sourceSsbos.clear();
 
@@ -24,8 +24,7 @@ void fillData(entt::registry& registry, vulkan::Buffer& Ec)
 
 }
 
-/// This function fill the VkCommandBuffer with the commands needed to apply the gaussian sources to the electric field.
-void dispatch(vk::CommandBuffer commandBuffer, entt::registry& registry, T time, vulkan::Buffer& Ec, T x0 = 0)
+void dispatch(vk::CommandBuffer commandBuffer, entt::registry& registry, T time, vulkan::Buffer& Ec, T x0 = 0) |\phantomsection\label{code:dispatch}|
 {
 	pushConstants.time = time;
 	pushConstants.x0   = x0;
