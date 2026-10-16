@@ -50,22 +50,9 @@ vulkan::ComputePipeline recreatePipeline(vulkan::Buffer& Ec) |\phantomsection\la
 	});
 }
 
-vulkan::Buffer allocateSsbosBuffer(std::size_t bytes)  |\phantomsection\label{code:allocateSsbosBuffer}|
-{
-	if(bytes == 0)
-		return {};
-
-	vma::AllocationCreateFlags vmaFlags =
-		vma::AllocationCreateFlagBits::eMapped |
-		vma::AllocationCreateFlagBits::eHostAccessSequentialWrite;
-
-	return createInfo.allocator.allocate(
-		bytes,
-		vk::BufferUsageFlagBits::eStorageBuffer,
-		vmaFlags,
-		vk::MemoryPropertyFlagBits::eDeviceLocal
-	);
-}
+.
+.
+.
 
 void fillData(entt::registry& registry, vulkan::Buffer& Ec) |\phantomsection\label{code:fillData}|
 {
