@@ -30,6 +30,7 @@ function abc(Ez, x, Cr, mu, eps)
 	end
 end
 
+# Variables
 x::Int64 = 100
 Cr::Float32 = 1.0 / sqrt(3.0)
 sigma::Float32 = 10
@@ -44,6 +45,7 @@ maxTime::Int64 = 300
 Hy = CuArray{Float32}(undef, x)
 Ez = CuArray{Float32}(undef, x)
 
+# Main
 for timestep in 1:1:maxTime
 	# 1
 	@cuda threads = x blocks = 1 updateH(Hy, Ez, x, deltaT, deltaX, mu)
