@@ -298,7 +298,7 @@ finally \texttt{vkCmdDispatch} to execute them.
 To ensure proper synchronization between dispatches the backend uses \texttt{vkCmdPipelineBarrier2} between fields.
 Finally the backend submits the commands, waits until the work finishes and continues with the next step.
 
-\subsection{Dispatch example}
+\subsection{Dispatch example} \label{subsection:dispatch}
 
 \inputminted[bgcolor=codeBg, tabsize=4, breaklines=true, linenos=true, escapeinside=||]{cpp}{\subfix{gauss.cpp}}
 
@@ -306,7 +306,10 @@ The function in line \ref{code:dispatch} fills the \texttt{VkCommandBuffer} with
 First in line \ref{code:iterate} it iterates all entities that have the \texttt{Transform} and \texttt{GaussianSource} components to fill the \texttt{sourceSsbos} vector with only the needed data.
 In case that the vector size exceeds the size of the Vulkan Buffer a new Buffer is allocated and the whole pipeline is recreated in line \ref{code:recreatePipeline}.
 Then it binds the compute pipeline, pushes the push constants and to finally dispatch the work per se and continues to the next substep.
-A similar process is repeated for the Fdtd shaders:
+
+\subsection{3D FDTD shaders}
+
+A similar process from \ref{subsection:dispatch} is repeated for the 3D Fdtd shaders \footnote{1D versions of these shaders are shown in Section \ref{sec:method:vulkan}}:
 \begin{itemize}
     \item \texttt{init\_coefs.slang}: Set the $C*$ coefficients.
     \item \texttt{update\_h.slang}: Updates the magnetic field components: $x$, $y$ or $z$
