@@ -306,6 +306,16 @@ The function in line \ref{code:dispatch} fills the \texttt{VkCommandBuffer} with
 First in line \ref{code:iterate} it iterates all entities that have the \texttt{Transform} and \texttt{GaussianSource} components to fill the \texttt{sourceSsbos} vector with only the needed data.
 In case that the vector size exceeds the size of the Vulkan Buffer a new Buffer is allocated and the whole pipeline is recreated in line \ref{code:recreatePipeline}.
 Then it binds the compute pipeline, pushes the push constants and to finally dispatch the work per se and continues to the next substep.
+A similar process is repeated for the Fdtd shaders:
+\begin{itemize}
+    \item \texttt{init\_coefs.slang}: Set the $C*$ coefficients.
+    \item \texttt{update\_h.slang}: Updates the magnetic field components: $x$, $y$ or $z$
+    \item \texttt{update\_e.slang}: Updates the electric field components: $x$, $y$ or $z$
+    \item \texttt{gauss.slang}: Applies the gaussian sources.
+    \item \texttt{abc.slang}: Applies the boundary conditions on the borders of the electric field.
+\end{itemize}
+
+
 
 % TODO:
 % - It has a lot of boilerplate.
