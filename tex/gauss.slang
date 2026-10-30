@@ -1,4 +1,4 @@
-// gaussianSource.slang
+// gauss.slang
 
 RWStructuredBuffer<float> Ez;
 
