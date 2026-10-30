@@ -106,6 +106,7 @@ This source depends on the $q$ temporal step and the width $\sigma$.
 	E_z^{q+1}\left[x\right] = E_z^{q}\left[x\right] + \frac{\frac{Cr}{\sqrt{\mu_r\epsilon_r}}-1}{\frac{Cr}{\sqrt{\mu_r\epsilon_r}}+1}\left(E_z^{q+1}\left[x-1\right]-E_z^q\left[x\right]\right)
 \end{equation}
 
+With only \blackcircleref{step:magnetic}, \blackcircleref{step:electric} and \blackcircleref{step:sources} the waves reflect on the borders. Thus a boundary condition is needed to avoid that.
 $Cr$ is the Courant number, the bottom boundary is at index 1 and the $x$ in \ref{eq:abc1} is the index of the top boundary.
 $\sqrt{\mu_r\epsilon_r} = \sqrt{\mu\epsilon}/c$ where $c$ is the speed of light in free space.
 % TODO: Sc or Cr. Is Cr a constant or calculated from the deltas?
@@ -156,15 +157,19 @@ Like Google's \texttt{glslc}\cite{shaderc} or Shader Slang's \texttt{slangc}\cit
 	\label{fig:vulkan_compute_pipeline}
 \end{figure}
 
+The directed graph in Figure \ref{fig:vulkan_compute_pipeline} shows the possible paths to create a Vulkan compute pipeline.
+Each node is a file format or a Vulkan object
+and each $(x,y)$ edge represents that $y$ can be created from $x$.
+
 Using Vulkan Compute Shaders requires writing a considerable amount of boilerplate.
-Therefore for the 1D example, only the \texttt{*.slang} file will be shown.
+Therefore for the simplified 1D example, only the \texttt{*.slang} file will be shown.
+More in depth host-side code will be shown in Chapter \ref{chapter:methodology}
 
 \inputminted[bgcolor=codeBg, tabsize=4, breaklines=true, linenos=true]{hlsl}{\subfix{updateH.slang}}
 \inputminted[bgcolor=codeBg, tabsize=4, breaklines=true, linenos=true]{hlsl}{\subfix{updateE.slang}}
 \inputminted[bgcolor=codeBg, tabsize=4, breaklines=true, linenos=true]{hlsl}{\subfix{gaussianSource.slang}}
 \inputminted[bgcolor=codeBg, tabsize=4, breaklines=true, linenos=true]{hlsl}{\subfix{abc.slang}}
 
-\subsection{2D equation}
 %IDK IDK IDK IDK IDK IDK
 
 %\inputminted[bgcolor=codeBg, tabsize=4, breaklines=true, linenos=true]{cpp}{\subfix{add.cpp}}
