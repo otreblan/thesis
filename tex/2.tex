@@ -50,7 +50,7 @@ Each equation takes the previous iteration's fields and some constants from the 
 
 \subsection{1D equation}
 
-For the sake of conciseness only the one-dimensional equations will be shown. The full 3D equations are in Appendix \ref{section:fdtd_3d}.
+For the sake of conciseness only the one-dimensional equations from \citet{ufdtd} will be shown. The full 3D equations are in Appendix \ref{section:fdtd_3d}.
 
 \subsection{Discrete notation}
 
@@ -64,7 +64,7 @@ For the sake of conciseness only the one-dimensional equations will be shown. Th
 \end{equation}
 
 Where $m,q$ are the spatial and temporal step indices, and $\Delta_x,\Delta_t$ are their respective offsets.
-When using 3 spatial dimensions $m,n,p$ are the $x,y,z$ indices.
+When using 3 spatial dimensions $m,n,p$ are the $x,y,z$ indices. \footnote{In code $m,n,p$ are floored to turn them into valid array indices.}
 
 \subsection{Magnetic field update}
 
@@ -118,7 +118,7 @@ Moreover, the \texttt{CUDA.jl}\cite{besard2018juliagpu} package allows it to int
 Here is a didactic example of a 1D FDTD implementation.
 \inputminted[bgcolor=codeBg, tabsize=4, breaklines=true, linenos=true]{julia}{\subfix{add.jl}}
 
-\section{Vulkan}
+\section{Vulkan} \label{sec:method:vulkan}
 Vulkan\cite{vulkanspec} is a low-level C API for graphics and compute in GPUs.
 Unlike CUDA, which only runs on Nvidia hardware natively\footnote{With ZLUDA is posible to run CUDA programs in Radeon hardware.}, it has a wider range of compatible GPU hardware\cite{vulkandb}.
 
