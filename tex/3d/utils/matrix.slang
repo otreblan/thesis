@@ -36,7 +36,6 @@ struct cmatrix3d<T = FDTD_FLOAT_T>
 	}
 };
 
-// TODO: Find a way to dedup this
 struct matrix3d<T = FDTD_FLOAT_T>
 {
 	typealias buffer_t = RWStructuredBuffer<T>;
@@ -97,7 +96,6 @@ struct cmatrix2d<T = FDTD_FLOAT_T>
 	}
 };
 
-// TODO: Find a way to dedup this
 struct matrix2d<T = FDTD_FLOAT_T>
 {
 	typealias buffer_t = RWStructuredBuffer<T>;
@@ -188,7 +186,6 @@ struct slicedCmatrix2d<T = FDTD_FLOAT_T>
 	}
 };
 
-// TODO: Find a way to dedup this
 struct slicedMatrix2d<T = FDTD_FLOAT_T>
 {
 	typealias matrix_t = matrix3d<T>;
