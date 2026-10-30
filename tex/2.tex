@@ -68,46 +68,53 @@ When using 3 spatial dimensions $m,n,p$ are the $x,y,z$ indices.
 
 \subsection{Magnetic field update}
 
-$\mu$ is the permeability of the material.
 
 \begin{equation}
 	\text{\blackcircleref{step:magnetic}\quad}
 	H_y^{q+\frac{1}{2}} \left[m+\frac{1}{2}\right] = H_y^{q-\frac{1}{2}} \left[m+\frac{1}{2}\right] +\frac{\Delta_t}{\mu\Delta_x} \left(E_z^q\left[m+1\right]-E_z^q\left[m\right]\right)
 \end{equation}
 
+$\mu$ is the permeability of the material.
+
 \subsection{Electric field update}
 
-$\epsilon$ is the permittivity of the material.
 
 \begin{equation}
 	\text{\blackcircleref{step:electric}\quad}
 	E_z^{q+1}\left[m\right] = E_z^{q}\left[m\right] + \frac{\Delta_t}{\epsilon\Delta_x}\left(H_y^{q+\frac{1}{2}}\left[m+\frac{1}{2}\right]-H_y^{q+\frac{1}{2}}\left[m-\frac{1}{2}\right]\right)
 \end{equation}
 
+$\epsilon$ is the permittivity of the material.
+
 \subsection{Gaussian source}
 
-This source depends on the $q$ temporal step which is scaled by $\sigma$.
 \begin{equation}
 	\text{\blackcircleref{step:sources}\quad}
 	E_z^{q+1}\left[m\right] = E_z^{q}\left[m\right] + \exp\left(-\left(\frac{q}{\sigma}\right)^2\right)
 \end{equation}
 
+This source depends on the $q$ temporal step and the width $\sigma$.
+
 \subsection{Absorbing boundary conditions}
-$Cr$ is the Courant number.
 
 \begin{equation}
 	\text{\blackcircleref{step:abc}\quad}
-	E_z^{q+1}\left[1\right] = E_z^{q}\left[1\right] + \frac{\frac{Cr}{\sqrt{\mu*\epsilon}}-1}{\frac{Cr}{\sqrt{\mu*\epsilon}}+1}*\left(E_z^q\left[2\right]-E_z^q\left[1\right]\right)
+	E_z^{q+1}\left[0\right] = E_z^{q}\left[1\right] + \frac{\frac{Cr}{\sqrt{\mu_r\epsilon_r}}-1}{\frac{Cr}{\sqrt{\mu_r\epsilon_r}}+1}\left(E_z^{q+1}\left[1\right]-E_z^q\left[0\right]\right)
 \end{equation}
-\begin{equation}
+\begin{equation} \label{eq:abc1}
 	\text{\blackcircleref{step:abc}\quad}
-	E_z^{q+1}\left[x\right] = E_z^{q}\left[x\right] + \frac{\frac{Cr}{\sqrt{\mu*\epsilon}}-1}{\frac{Cr}{\sqrt{\mu*\epsilon}}+1}*\left(E_z^q\left[x-1\right]-E_z^q\left[x\right]\right)
+	E_z^{q+1}\left[x\right] = E_z^{q}\left[x\right] + \frac{\frac{Cr}{\sqrt{\mu_r\epsilon_r}}-1}{\frac{Cr}{\sqrt{\mu_r\epsilon_r}}+1}\left(E_z^{q+1}\left[x-1\right]-E_z^q\left[x\right]\right)
 \end{equation}
+
+$Cr$ is the Courant number, the bottom boundary is at index 1 and the $x$ in \ref{eq:abc1} is the index of the top boundary.
+$\sqrt{\mu_r\epsilon_r} = \sqrt{\mu\epsilon}/c$ where $c$ is the speed of light in free space.
+% TODO: Sc or Cr. Is Cr a constant or calculated from the deltas?
+% Where does 1/\sqrt{3} comes from in a 3d space?
 
 \section{Julia + CUDA}
 Julia\cite{juliaspec} is a dynamically typed programming language mainly used for scientific computing.
 Moreover, the \texttt{CUDA.jl}\cite{besard2018juliagpu} package allows it to interface with Nvidia GPUs.
-Here is an example of a 1D FDTD implementation.
+Here is a didactic example of a 1D FDTD implementation.
 \inputminted[bgcolor=codeBg, tabsize=4, breaklines=true, linenos=true]{julia}{\subfix{add.jl}}
 
 \section{Vulkan}
@@ -115,7 +122,8 @@ Vulkan\cite{vulkanspec} is a low-level C API for graphics and compute in GPUs.
 Unlike CUDA, which only runs on Nvidia hardware natively\footnote{With ZLUDA is posible to run CUDA programs in Radeon hardware.}, it has a wider range of compatible GPU hardware\cite{vulkandb}.
 
 In OpenGL, Vulkan's predecessor, the shader source file can be passed directly to the driver, but as shown in Figure \ref{fig:vulkan_compute_pipeline} Vulkan requires
-for each shader to be compiled into a spirv file, loaded into a shader module\footnote{From Vulkan 1.4 onward the \texttt{*.spv} file path can be passed directly into the creation of the pipeline.} and then finally used as part of a compute pipeline before it can be used.
+for each shader to be compiled into spirv, which is a binary format for shaders.
+The spirv binary can then be loaded into a shader module\footnote{From Vulkan 1.4 onward the \texttt{*.spv} file path can be passed directly into the creation of the pipeline.} and then finally used as part of a compute pipeline before it can be used.
 For that purpose a shader compiler is needed.
 Like Google's \texttt{glslc}\cite{shaderc} or Shader Slang's \texttt{slangc}\cite{10.1145/3197517.3201380} (which is the one that we used in this project).
 
@@ -155,6 +163,9 @@ Therefore for the 1D example, only the \texttt{*.slang} file will be shown.
 \inputminted[bgcolor=codeBg, tabsize=4, breaklines=true, linenos=true]{hlsl}{\subfix{updateE.slang}}
 \inputminted[bgcolor=codeBg, tabsize=4, breaklines=true, linenos=true]{hlsl}{\subfix{gaussianSource.slang}}
 \inputminted[bgcolor=codeBg, tabsize=4, breaklines=true, linenos=true]{hlsl}{\subfix{abc.slang}}
+
+\subsection{2D equation}
+%IDK IDK IDK IDK IDK IDK
 
 %\inputminted[bgcolor=codeBg, tabsize=4, breaklines=true, linenos=true]{cpp}{\subfix{add.cpp}}
 
