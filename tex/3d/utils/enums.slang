@@ -1,3 +1,5 @@
+// utils/enums.slang
+
 #pragma once
 
 enum Dim: uint32_t

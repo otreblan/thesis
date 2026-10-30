@@ -1,3 +1,5 @@
+// utils/types.slang
+
 #pragma once
 
 #ifndef FDTD_FLOAT_T
