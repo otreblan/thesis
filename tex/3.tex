@@ -309,7 +309,8 @@ Then it binds the compute pipeline, pushes the push constants and to finally dis
 
 \subsection{3D FDTD shaders}
 
-A similar process from \ref{subsection:dispatch} is repeated for the 3D Fdtd shaders \footnote{1D versions of these shaders are shown in Section \ref{sec:method:vulkan}}:
+A similar process from \ref{subsection:dispatch} is repeated for each precision permutation (by setting the \texttt{FDTD\_FLOAT\_T} macro) of the 3D Fdtd shaders \footnote{1D versions of these shaders are shown in Section \ref{sec:method:vulkan}}:
+
 \begin{itemize}
     \item \texttt{init\_coefs.slang}: Set the $C*$ coefficients.
     \item \texttt{update\_h.slang}: Updates the magnetic field components: $x$, $y$ or $z$
